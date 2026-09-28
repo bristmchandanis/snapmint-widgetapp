@@ -1,0 +1,39 @@
+.snp-widget-wrapper {margin: 10px 0; position: relative; z-index: 999;}
+.snp-widget {position: relative; display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 8px; background-color: #EFEFEF; border-radius: 6px;}
+.snp-offer-badge {position: absolute; z-index: 5; top: -8px; left: 8px; display: flex; align-items: center; gap:16px; white-space: nowrap;}
+.snp-offer-new {position: relative; z-index: 3; padding: 2px 0px 4px 3px; background: #2ca254; color: #ffffff; border-radius: 2px; font-size: 8px; font-weight: 700; line-height: 10px; font-style: italic; }
+.snp-offer-new::after {content: ""; position: absolute; z-index: -1; top: 0; right: 0; width: 100%; height: 100%; background: #2ca254; transform: skewX(-25deg); transform-origin: bottom left; border-radius: 2px; }
+.snp-offer-text { position: relative; z-index: 2; display: inline-flex; align-items: center; padding: 2px 14px 2px 0px; background: #000000; color: #ffffff; font-size: 9px; font-weight: 700; line-height: 12px; border-radius: 2px; }
+.snp-offer-text::before { content: ""; position: absolute; z-index: -1; top: 0; left: -13px; width: 100%; height: 100%; background: #000000; transform: skewX(-25deg); transform-origin: bottom; border-radius: 2px; }
+.snp-main-content { display: flex; align-items: center; min-width: 0; padding-top: 3px; position: relative; gap: 8px}
+.snp-main-content.snp-with-prefix{gap:4px}
+.snp-price-prefix{font-size: 13px; font-weight: 400; color: #1B1B1B; line-height: 14px; }
+.snp-price {color: #2d9c51; font-size: 13px; font-weight: 700; line-height: 16px; }
+.snp-divider{position: relative}
+.snp-divider::after{ content: ''; width: 1px; height: 10px;  background: #1B1B1B; display: inline-block; position: absolute; right: -4px;top: 3px; }
+.snp-description { color: #1B1B1B; font-size: 10px; font-weight: 400; line-height: 14px; display: flex; align-items: center; gap: 2px }
+.snp-cta { padding: 6px 8px; border: 0; border-radius: 4px; background: #ef0714; color: #ffffff; font-size: 11px; font-weight: 700; line-height: 14px; cursor: pointer; transition: background-color 0.15s ease, transform 0.15s ease; }
+.snp-cta:hover { background: #da0612; }
+.snp-cta:active { transform: scale(0.98); } 
+.snp-cta:focus-visible { outline: 2px solid #111111; outline-offset: 2px; }
+.snp-cta-link-btn{display: flex; align-items: center; gap:2px}
+.snp-cta-link{color: #151E29;font-size: 13px;font-style: normal;font-weight: 700;line-height: normal; text-decoration-line: underline; text-decoration-style: solid; text-decoration-skip-ink: auto; text-decoration-thickness: 8%; text-underline-offset: 11%; text-underline-position: from-font; text-transform: capitalize; border: 0; text-align: left; padding: 0; cursor: pointer;}
+
+.snp-widget-minimal-wrapper{margin: 10px 0; position: relative; z-index: 999; cursor: pointer}
+.snp-minimal-widget {position: relative; display: flex; align-items: center; width: 100%; padding: 12px 22px; background-color: transparent; border-radius: 12px; border: 1.5px solid #E43840; }
+.snp-minimal-price-prefix, .snp-minimal-description{color: #1B1B1B;font-size: 12px;font-style: normal;font-weight: 500;line-height: 16px;}
+.snp-minimal-price{color:#2DA257;font-size: 12px;font-style: normal;font-weight: 700;line-height: 16px;}
+.snp-minimal-main-content{display: flex; align-items: center; min-width: 0; position: relative; gap:16px;}
+.snp-minimal-price-container, .snp-minimal-branding{display: flex; align-items: center; gap: 4px;}
+.snp-emi{color: #1B1B1B; font-size:13px;font-style: normal; font-weight:700 ;line-height:16px}
+.snp-emi-on-upi{color: #1B1B1B; font-size:10px;font-style: normal; font-weight:700 ;line-height:14px}
+.snp-emi-on{color: #1B1B1B; font-size:13px; font-style: normal; font-weight:400 ;line-height:16px}
+.snp-main-content-two{gap:3px}
+.snp-upi{line-height: normal; margin-right: 6px}
+.snp-main-content-two .snp-divider:after{top:5px; right: -5px}
+.snp-widget-two .snp-cta { padding: 8px 8px;}
+@media (min-width: 320px) {
+    /*  .snp-widget {flex-direction: column; align-items: stretch; gap: 10px; padding-top: 16px;}*/
+    /* .snp-main-content{flex-wrap: wrap;}*/
+    /*.snp-minimal-main-content {flex-wrap: wrap; flex-direction: row; row-gap: 2px;}*/
+}

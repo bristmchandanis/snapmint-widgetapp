@@ -1,0 +1,21 @@
+{% assign snap_product = closest.product %}
+<div
+  class="snapmint_widget_collection"
+  data-amount="{{ snap_product.selected_or_first_available_variant.price }}"
+  data-currency="{{ cart.currency.iso_code | default: shop.currency }}"
+  data-product-id="{{ snap_product.id }}"
+  data-product-handle="{{ snap_product.handle | escape }}"
+  data-product-name="{{ snap_product.title | escape }}"
+  data-variant-id="{{ snap_product.selected_or_first_available_variant.id }}"
+  data-available="{{ snap_product.selected_or_first_available_variant.available }}"
+  data-product-url="{{ snap_product.url }}"
+></div>
+
+
+{% schema %}
+{
+  "name": "Snapmint – collection",
+  "target": "section",
+  "settings": []
+}
+{% endschema %}

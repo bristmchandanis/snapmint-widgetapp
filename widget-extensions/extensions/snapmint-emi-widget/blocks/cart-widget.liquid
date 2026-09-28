@@ -1,0 +1,19 @@
+<div
+  class="snapmint_widget_cart"
+  id="snapmint-{{ block.id }}"
+  data-block-id="{{ block.id }}"
+  data-placement="cart"
+  data-amount="{{ cart.total_price }}"
+  data-currency="{{ cart.currency.iso_code | default: shop.currency }}"
+></div>
+
+{% schema %}
+{
+  "name": "Snapmint – Cart",
+  "target": "section",
+  "enabled_on": {
+    "templates": ["cart"]
+  },
+  "settings": []
+}
+{% endschema %}

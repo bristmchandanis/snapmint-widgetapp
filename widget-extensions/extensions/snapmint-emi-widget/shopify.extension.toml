@@ -1,0 +1,11 @@
+name = "snapmint-emi-widget"
+type = "theme"
+uid = "16783bf1-47ee-b567-df60-0f4a8366ce52d59fbfc2"
+
+[[metafields]]
+namespace = "snapmint_emi"
+key = "widget_layout"
+
+[[metafields]]
+namespace = "snapmint_emi"
+key = "widget_config"

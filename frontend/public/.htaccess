@@ -1,0 +1,15 @@
+Options -MultiViews
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.html [QSA,L]
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # Capture the 'shop' parameter from the query string
+    RewriteCond %{QUERY_STRING} shop=([^&]+)
+    RewriteRule ^ - [E=SHOP:%1]
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header set Content-Security-Policy "frame-ancestors https://%{SHOP}e https://admin.shopify.com;"
+</IfModule>

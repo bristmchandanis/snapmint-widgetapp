@@ -1,0 +1,31 @@
+{
+  "name": "snapmint-shopify-theme-widgets",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "webpack serve --mode development",
+    "dev": "webpack --mode development --watch",
+    "build": "webpack --mode production",
+    "check:legacy": "node scripts/check-legacy-parity.mjs",
+    "test:category": "node scripts/category-integration-test.mjs",
+    "test:pdp": "node scripts/pdp-integration-test.mjs",
+    "test:cart": "node scripts/cart-integration-test.mjs",
+    "verify": "npm run check:legacy && npm run build && npm run test:category && npm run test:pdp && npm run test:cart"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@babel/preset-env": "^7.25.3",
+    "@babel/preset-react": "^7.24.7",
+    "babel-loader": "^9.2.1",
+    "css-loader": "^7.1.2",
+    "jsdom": "^29.1.1",
+    "style-loader": "^4.0.0",
+    "webpack": "^5.94.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^6.0.0"
+  }
+}

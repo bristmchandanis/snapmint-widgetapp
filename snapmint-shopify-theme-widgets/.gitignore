@@ -1,0 +1,5 @@
+node_modules/
+.DS_Store
+.shopify/
+extensions/snapmint-widgets/assets/*.map
+

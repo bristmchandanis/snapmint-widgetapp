@@ -1,0 +1,22 @@
+name = "snapmint-widget-web-pixel"
+type = "web_pixel_extension"
+uid = "2a79931b-facd-233c-bede-fc9bdced6763c4b454b9"
+
+runtime_context = "strict"
+
+[settings]
+type = "object"
+
+[customer_privacy]
+analytics = true
+marketing = true
+preferences = false
+sale_of_data = "enabled"
+
+[settings.fields.accountID]
+name = "Account ID"
+description = "Account ID"
+type = "single_line_text_field"
+validations =  [
+  { name = "min", value = "1" }
+]

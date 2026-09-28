@@ -1,0 +1,36 @@
+<script>
+  window.snapmintWidgetPlans = {{ shop.metafields.snapmint_emi.merchant_plans.value | json }};
+  window.snapmintAutoSetupClass = {{ shop.metafields.snapmint_emi.auto_setup.value | json }};
+  window.snapmintWidgetLayout = {{ shop.metafields.snapmint_emi.widget_layout.value | json }};
+  window.snapmintInlineWidgetColor = {{ shop.metafields.snapmint_emi.inner_layout_colors.value | json }};
+  window.snapmintMoneyFormat = '{{ shop.money_format | strip_html }}';
+</script>
+{% if product != blank %}
+  <script type="application/json" data-snapmint-product>
+    {
+      "id": {{ product.id | json }},
+      "title": {{ product.title | json }},
+      "handle": {{ product.handle | json }},
+      "variants": [
+        {%- for variant in product.variants -%}
+          {
+            "id": {{ variant.id | json }},
+            "price": {{ variant.price | json }},
+            "available": {{ variant.available | json }}
+          }{%- unless forloop.last -%},{%- endunless -%}
+        {%- endfor -%}
+      ]
+    }
+  </script>
+{% endif %}
+<script src="{{ 'snpmit-selector.js' | asset_url }}" defer></script>
+{% comment %} <script src="{{ 'snapmint-widgets.js' | asset_url }}" defer></script> {% endcomment %}
+<script src="https://snapmint-widget.in.ngrok.io/snapmint-widgets.js" defer></script>
+
+{% schema %}
+{
+  "name": "Snapmint Widget",
+  "target": "body",
+  "settings": []
+}
+{% endschema %}

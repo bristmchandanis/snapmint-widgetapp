@@ -1,0 +1,22 @@
+<div
+  class="snapmint_widget_pdp"
+  id="snapmint-{{ block.id }}"
+  data-block-id="{{ block.id }}"
+  data-placement="pdp"
+  data-amount="{{ product.selected_or_first_available_variant.price }}"
+  data-currency="{{ cart.currency.iso_code | default: shop.currency }}"
+  data-product-id="{{ product.id }}"
+  data-product-handle="{{ product.handle | escape }}"
+  data-product-name="{{ product.title | escape }}"
+  data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+  data-available="{{ product.selected_or_first_available_variant.available }}"
+  data-product-url="{{ product.url }}"
+></div>
+{% comment %} <script src="{{ 'snapmint-loader.js' | asset_url }}" data-bundle="{{ 'snapmint-widgets.js' | asset_url }}" defer></script> {% endcomment %}
+{% schema %}
+{
+  "name": "Snapmint – product",
+  "target": "section",
+  "settings": []
+}
+{% endschema %}
