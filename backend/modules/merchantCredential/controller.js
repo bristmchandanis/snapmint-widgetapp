@@ -28,7 +28,7 @@ const findShopByDomainOrHandle = async (shopStr) => {
 
 const addMerchantCredential = async (req, res) => {
   try {
-    const { shop, merchantId, mid, token } = req.body;
+    const { shop, merchantId, mid, token, name, brandingMode } = req.body;
     const targetMerchantId = merchantId || mid;
 
     if (!shop || !targetMerchantId || !token) {
@@ -39,7 +39,6 @@ const addMerchantCredential = async (req, res) => {
     }
 
     const cleanShop = sanitizeString(shop);
-    const handle = cleanShop.split('.')[0];
     const cleanMerchantId = String(targetMerchantId).trim();
     const cleanToken = String(token).trim();
 
@@ -52,6 +51,8 @@ const addMerchantCredential = async (req, res) => {
         shop: cleanShop,
         merchantId: cleanMerchantId,
         token: cleanToken,
+        name: name ? String(name).trim() : null,
+        brandingMode: brandingMode || 'snapmint',
         appInstall: currentInstallStatus,
         createdBy: req.user?.id || null,
       },
@@ -61,6 +62,8 @@ const addMerchantCredential = async (req, res) => {
       await merchant.update({
         merchantId: cleanMerchantId,
         token: cleanToken,
+        name: name ? String(name).trim() : merchant.name,
+        brandingMode: brandingMode || 'snapmint',
         appInstall: currentInstallStatus,
         ...(req.user?.id && { createdBy: req.user.id }),
       });
@@ -177,7 +180,7 @@ const deleteMerchantCredential = async (req, res) => {
       if (shopRow.token) {
         getGraphQLClient({ shopDomain: shopRow.myshopifyDomain, accessToken: shopRow.token })
           .then(({ graphqlClient }) => syncSnapmintMetafield(graphqlClient, null, false))
-          .catch(() => {});
+          .catch(() => { });
       }
     }
 

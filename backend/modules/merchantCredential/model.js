@@ -19,6 +19,15 @@ const MerchantCredential = sequelize.define('MerchantCredential', {
   token: encryptedAttribute('token', {
     allowNull: false,
   }),
+  name: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  brandingMode: {
+    type: DataTypes.ENUM('snapmint', 'co-branded', 'white-label'),
+    allowNull: false,
+    defaultValue: 'snapmint',
+  },
   appInstall: {
     type: DataTypes.ENUM('0', '1'),
     allowNull: false,
