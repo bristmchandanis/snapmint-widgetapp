@@ -92,7 +92,6 @@ export default function AllMerchants({ user, mode }) {
           isDetailsMode ? (
             <MerchantDetails
               merchant={targetMerchant}
-              onBack={handleClose}
               onNextPlans={() => setOnboardingStep(2)}
               onEdit={() => navigate(`${appRoutesURL.merchantOnboard}/edit/${activeMerchantId}`)}
             />

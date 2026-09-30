@@ -1,6 +1,6 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { IconArrowRight, IconArrowLeft } from '../common/Icons';
+import { IconArrowRight } from '../common/Icons';
 
 const BRANDING_LABELS = {
   snapmint: 'Snapmint',
@@ -13,7 +13,6 @@ const formatBrandingMode = (mode) => BRANDING_LABELS[mode] || 'Snapmint';
 export default function MerchantDetails({
   merchant,
   onNextPlans,
-  onBack,
   onEdit,
 }) {
   if (!merchant) return null;
@@ -27,18 +26,6 @@ export default function MerchantDetails({
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      {onBack && (
-        <div>
-          <button
-            type="button"
-            onClick={onBack}
-            className="text-xs font-semibold text-gray-500 hover:text-gray-900 flex items-center gap-1 cursor-pointer transition-colors"
-          >
-            <IconArrowLeft className="w-3.5 h-3.5" />
-            <span>All merchants</span>
-          </button>
-        </div>
-      )}
 
       <div>
         <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">
@@ -78,7 +65,7 @@ export default function MerchantDetails({
           <Button
             type="button"
             onClick={onNextPlans}
-            className="rounded-lg h-9 px-5 bg-[#ff5a00] hover:bg-[#e04f00] text-white font-bold text-xs shadow-xs cursor-pointer flex items-center gap-1.5 transition-all"
+            className="rounded-lg h-9 px-5 bg-black hover:bg-gray-800 text-white font-bold text-xs shadow-xs cursor-pointer flex items-center gap-1.5 transition-all"
           >
             <span>Next: Plans</span>
             <IconArrowRight className="w-4 h-4 text-white" />
