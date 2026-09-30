@@ -187,7 +187,7 @@ export default function Configure({ initialConfig, onContinue }) {
         <Button
           type="button"
           onClick={handleSave}
-          className="rounded-md h-8 px-5 bg-black hover:bg-gray-800 text-white font-bold text-xs shadow-xs cursor-pointer transition-all flex items-center gap-2"
+          className="rounded-md h-9 px-5 bg-black hover:bg-gray-800 text-white font-bold text-xs shadow-xs cursor-pointer transition-all flex items-center gap-1.5"
         >
           <span>Continue to Customisation</span>
           <ArrowRight className="w-4 h-4 text-white" />

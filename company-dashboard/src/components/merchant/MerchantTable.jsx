@@ -1,8 +1,10 @@
+import { Link } from 'react-router-dom';
 import DataTable from '../common/DataTable';
 import { Card } from '@/components/ui/card';
 import { TableRow, TableCell } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { IconPlus } from '../common/Icons';
+import { appRoutesURL } from '../../routes/appRoutesURL';
 
 const TABLE_HEADERS = [
   'Merchant',
@@ -105,14 +107,20 @@ export default function MerchantTable({
                   <TableCell className="py-4 px-6 text-right">
                     <div className="flex items-center justify-end gap-3 sm:gap-4">
                       {hasDomain && (
-                        <span className="text-xs font-semibold text-gray-800 underline underline-offset-4 cursor-pointer">
+                        <Link
+                          to={`${appRoutesURL.merchantOnboard}/${merchant.id}?step=1`}
+                          className="text-xs font-semibold text-gray-800 underline underline-offset-4 cursor-pointer hover:text-black transition-colors"
+                        >
                           Details
-                        </span>
+                        </Link>
                       )}
 
-                      <span className="text-xs font-semibold text-gray-800 underline underline-offset-4 cursor-pointer">
+                      <Link
+                        to={`${appRoutesURL.merchantOnboard}/${merchant.id}?step=2`}
+                        className="text-xs font-semibold text-gray-800 underline underline-offset-4 cursor-pointer hover:text-black transition-colors"
+                      >
                         Plans
-                      </span>
+                      </Link>
 
                       <span className="text-xs font-semibold text-gray-800 underline underline-offset-4 cursor-pointer">
                         Coupons

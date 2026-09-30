@@ -81,6 +81,7 @@ export default function App() {
             <Route path="merchant-onboard/create/:step" element={<AllMerchants user={user} mode="create" />} />\r
             <Route path="merchant-onboard/create" element={<AllMerchants user={user} mode="create" />} />\r
             <Route path="merchant-onboard/edit/:editId" element={<AllMerchants user={user} mode="edit" />} />
+            <Route path="merchant-onboard/:merchantId" element={<AllMerchants user={user} mode="details" />} />
             <Route path="merchant-onboard" element={<AllMerchants user={user} />} />
             <Route path="widget-customization/create/:masterTemplateId" element={<WidgetCustomization user={user} mode="create" />} />
             <Route path="widget-customization/create" element={<WidgetCustomization user={user} mode="create" />} />

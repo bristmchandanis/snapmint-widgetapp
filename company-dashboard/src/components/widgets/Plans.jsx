@@ -44,17 +44,15 @@ function SuffixedInput({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className={`w-full h-9.5 pl-3 pr-6 text-xs font-medium rounded-lg outline-none transition-all ${
-          error
-            ? 'bg-red-50/20 text-red-900 border border-red-400 focus:border-red-500 focus:ring-1 focus:ring-red-400/20 placeholder:text-red-300'
-            : 'bg-white text-gray-900 border border-gray-200 focus:border-gray-400 focus:ring-1 focus:ring-gray-400/20'
-        }`}
+        className={`w-full h-9.5 pl-3 pr-6 text-xs font-medium rounded-lg outline-none transition-all ${error
+          ? 'bg-red-50/20 text-red-900 border border-red-400 focus:border-red-500 focus:ring-1 focus:ring-red-400/20 placeholder:text-red-300'
+          : 'bg-white text-gray-900 border border-gray-200 focus:border-gray-400 focus:ring-1 focus:ring-gray-400/20'
+          }`}
       />
       {suffix && (
         <span
-          className={`absolute right-2.5 text-xs font-semibold pointer-events-none ${
-            error ? 'text-red-400' : 'text-gray-400'
-          }`}
+          className={`absolute right-2.5 text-xs font-semibold pointer-events-none ${error ? 'text-red-400' : 'text-gray-400'
+            }`}
         >
           {suffix}
         </span>
@@ -338,25 +336,8 @@ export default function Plans({ onContinue, initialPlans }) {
 
               <div className="divide-y divide-gray-100">
                 {plans.length === 0 ? (
-                  <div className="py-10 text-center flex flex-col items-center justify-center gap-2.5">
-                    <div className="w-9 h-9 rounded-full bg-red-50 text-red-500 flex items-center justify-center">
-                      <IconAlertCircle className="w-4.5 h-4.5" />
-                    </div>
-                    <div className="space-y-1">
-                      <p className="text-xs font-semibold text-gray-800">No merchant plans added yet</p>
-                      <p className="text-xs text-red-600 font-medium">
-                        At least one merchant plan is required to continue to Price Bands.
-                      </p>
-                    </div>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={handleAddPlan}
-                      className="mt-1 rounded-md h-7 px-3 border-gray-300 text-gray-800 hover:bg-gray-50 text-xs font-semibold cursor-pointer inline-flex items-center gap-1.5"
-                    >
-                      <IconPlus className="w-3.5 h-3.5 text-gray-600" />
-                      <span>Add plan</span>
-                    </Button>
+                  <div className="py-10 text-center flex flex-col items-center justify-center gap-1.5">
+                    <p className="text-xs font-semibold text-gray-500">No merchant plans added yet</p>
                   </div>
                 ) : (
                   plans.map((plan) => (
@@ -385,15 +366,9 @@ export default function Plans({ onContinue, initialPlans }) {
             </Button>
 
             <div className="flex items-center gap-3">
-              {plans.length === 0 && (
-                <span className="text-xs text-red-600 font-medium flex items-center gap-1.5">
-                  <IconAlertCircle className="w-3.5 h-3.5 text-red-500 shrink-0" />
-                  At least 1 plan required
-                </span>
-              )}
               <Button
                 type="submit"
-                className="rounded-md h-8 px-5 bg-black hover:bg-gray-800 text-white font-bold text-xs shadow-xs cursor-pointer transition-all flex items-center gap-2"
+                className="rounded-lg h-9 px-5 bg-black hover:bg-gray-800 text-white font-bold text-xs shadow-xs cursor-pointer transition-all flex items-center gap-1.5"
               >
                 <span>Continue to Price Bands</span>
                 <IconArrowRight className="w-4 h-4 text-white" />
@@ -403,18 +378,18 @@ export default function Plans({ onContinue, initialPlans }) {
         </Card>
       </form>
 
-        <ConfirmModal
-          open={Boolean(planToDelete)}
-          onClose={() => setPlanToDelete(null)}
-          onConfirm={handleConfirmDelete}
-          title="Delete Merchant Plan"
-          description="Are you sure you want to delete this merchant plan?"
-          confirmText="Delete"
-          cancelText="Cancel"
-          variant="destructive"
-          icon={IconTrash}
-          compact
-        />
-      </div>
+      <ConfirmModal
+        open={Boolean(planToDelete)}
+        onClose={() => setPlanToDelete(null)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Merchant Plan"
+        description="Are you sure you want to delete this merchant plan?"
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="destructive"
+        icon={IconTrash}
+        compact
+      />
+    </div>
   );
 }

@@ -5,28 +5,40 @@ import { getModulePermissions } from '../utils/helpers';
 import { appRoutesURL } from '../routes/appRoutesURL';
 import Stepper from '../components/common/Stepper';
 import AddMerchant from '../components/merchant/AddMerchant';
+import MerchantDetails from '../components/merchant/MerchantDetails';
 import MerchantTable from '../components/merchant/MerchantTable';
 import Plans from '@/components/widgets/Plans';
 import PriceBands from '@/components/widgets/PriceBands';
 import Configure from '@/components/widgets/Configure';
+import { IconSpinner } from '../components/common/Icons';
+
+const STEP_MAP = {
+  merchant: 1,
+  plans: 2,
+  'price-bands': 3,
+  configure: 4,
+};
 
 export default function AllMerchants({ user, mode }) {
   const navigate = useNavigate();
-  const { editId: routeEditId } = useParams();
+  const { editId: routeEditId, merchantId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const { canWrite } = getModulePermissions(user, 'merchantOnboard');
 
   const [merchants, setMerchants] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const [addModalOpen, setAddModalOpen] = useState(false);
-  const [editModalOpen, setEditModalOpen] = useState(false);
-  const [editingMerchant, setEditingMerchant] = useState(null);
-
-  const onboardingStep = Number(searchParams.get('step')) || 1;
-  const setOnboardingStep = (step) => setSearchParams({ step });
   const [wizardData, setWizardData] = useState({});
+
+  const activeMerchantId = routeEditId || merchantId;
+  const isEditMode = mode === 'edit';
+  const isDetailsMode = mode === 'details' || (Boolean(merchantId) && !isEditMode);
+  const isCreateMode = mode === 'create';
+  const isWizardOpen = isCreateMode || isEditMode || isDetailsMode;
+
+  const stepParam = searchParams.get('step');
+  const onboardingStep = STEP_MAP[stepParam] || Number(stepParam) || 1;
+  const setOnboardingStep = (step) => setSearchParams({ step });
 
   const fetchMerchants = useCallback(async () => {
     setLoading(true);
@@ -46,39 +58,28 @@ export default function AllMerchants({ user, mode }) {
     fetchMerchants();
   }, [fetchMerchants]);
 
-  // Sync route params with modals
-  useEffect(() => {
-    if (mode === 'create') {
-      setEditingMerchant(null);
-      setAddModalOpen(true);
-    } else if (routeEditId) {
-      const found = merchants.find((m) => String(m.id) === String(routeEditId));
-      if (found) {
-        setEditingMerchant(found);
-        setEditModalOpen(true);
-      }
-    } else {
-      setAddModalOpen(false);
-      setEditModalOpen(false);
-    }
-  }, [mode, routeEditId, merchants]);
+  const targetMerchant =
+    merchants.find((m) => String(m.id) === String(activeMerchantId)) ||
+    (wizardData?.id ? wizardData : null);
 
-  const handleCloseModals = () => {
-    setAddModalOpen(false);
-    setEditModalOpen(false);
-    setEditingMerchant(null);
+  const handleClose = () => {
     setWizardData({});
-    navigate(appRoutesURL.merchantOnboard);
+    navigate(isEditMode ? `${appRoutesURL.merchantOnboard}/${activeMerchantId}?step=1` : appRoutesURL.merchantOnboard);
   };
 
-  const handleOpenAddModal = () => {
-    setEditingMerchant(null);
-    setAddModalOpen(true);
+  const handleOpenCreate = () => {
     navigate(`${appRoutesURL.merchantOnboard}/create?step=1`);
   };
 
-  // Steps Flow
-  if (mode === 'create' || addModalOpen) {
+  if ((isEditMode || isDetailsMode) && loading && !targetMerchant) {
+    return (
+      <div className="flex items-center justify-center min-h-[300px]">
+        <IconSpinner className="w-8 h-8 animate-spin text-gray-900" />
+      </div>
+    );
+  }
+
+  if (isWizardOpen) {
     return (
       <div className="space-y-6 animate-in fade-in duration-300 w-full pb-12">
         <Stepper
@@ -88,20 +89,38 @@ export default function AllMerchants({ user, mode }) {
         />
 
         {onboardingStep === 1 && (
-          <AddMerchant
-            initialData={wizardData}
-            onCancel={handleCloseModals}
-            onSuccess={(step1Data) => {
-              setWizardData((prev) => ({ ...prev, ...step1Data }));
-              setOnboardingStep(2);
-            }}
-            disabled={!canWrite}
-          />
+          isDetailsMode ? (
+            <MerchantDetails
+              merchant={targetMerchant}
+              onBack={handleClose}
+              onNextPlans={() => setOnboardingStep(2)}
+              onEdit={() => navigate(`${appRoutesURL.merchantOnboard}/edit/${activeMerchantId}`)}
+            />
+          ) : (
+            <AddMerchant
+              initialData={isEditMode ? targetMerchant : wizardData}
+              onCancel={handleClose}
+              onSuccess={(step1Data) => {
+                if (isEditMode) {
+                  fetchMerchants();
+                  handleClose();
+                } else {
+                  setWizardData((prev) => ({ ...prev, ...step1Data }));
+                  setOnboardingStep(2);
+                }
+              }}
+              disabled={!canWrite}
+            />
+          )
         )}
 
         {onboardingStep === 2 && (
           <Plans
-            initialPlans={wizardData.plans}
+            initialPlans={
+              targetMerchant?.plans && targetMerchant.plans.length > 0
+                ? targetMerchant.plans
+                : wizardData.plans
+            }
             onBack={() => setOnboardingStep(1)}
             onContinue={(plans) => {
               setWizardData((prev) => ({ ...prev, plans }));
@@ -112,7 +131,7 @@ export default function AllMerchants({ user, mode }) {
 
         {onboardingStep === 3 && (
           <PriceBands
-            plans={wizardData.plans}
+            plans={wizardData.plans || targetMerchant?.plans}
             onBack={() => setOnboardingStep(2)}
             onContinue={(priceBandsData) => {
               setWizardData((prev) => ({ ...prev, priceBands: priceBandsData }));
@@ -123,13 +142,13 @@ export default function AllMerchants({ user, mode }) {
 
         {onboardingStep === 4 && (
           <Configure
-            merchantName={wizardData.name || editingMerchant?.name}
-            brandingMode={wizardData.brandingMode || editingMerchant?.brandingMode}
-            initialConfig={wizardData.configuration}
+            merchantName={wizardData.name || targetMerchant?.name}
+            brandingMode={wizardData.brandingMode || targetMerchant?.brandingMode}
+            initialConfig={wizardData.configuration || targetMerchant?.configuration}
             onBack={() => setOnboardingStep(3)}
             onContinue={(configuration) => {
               setWizardData((prev) => ({ ...prev, configuration }));
-              setOnboardingStep(5);
+              handleClose();
             }}
           />
         )}
@@ -142,7 +161,7 @@ export default function AllMerchants({ user, mode }) {
       merchants={merchants}
       loading={loading}
       canWrite={canWrite}
-      onAddMerchant={handleOpenAddModal}
+      onAddMerchant={handleOpenCreate}
     />
   );
 }
