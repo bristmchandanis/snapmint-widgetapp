@@ -125,3 +125,9 @@ pre {
   top: 12px !important;
   transform: none !important;
 }
+
+/* Thin scrollbar everywhere */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #919496 transparent;
+}

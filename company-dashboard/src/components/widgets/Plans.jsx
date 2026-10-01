@@ -2,7 +2,7 @@ import { useState, useCallback, useMemo, memo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { IconArrowRight, IconX, IconPlus, IconTrash, IconAlertCircle } from '../common/Icons';
+import { IconArrowRight, IconX, IconPlus, IconTrash } from '../common/Icons';
 import ConfirmModal from '../common/ConfirmModal';
 
 const DP_TYPE_OPTIONS = [
@@ -84,8 +84,8 @@ function SegmentedToggle({ options, value, onChange }) {
   );
 }
 
-const PlanRow = memo(function PlanRow({ plan, error, onUpdate, onRemove }) {
-  const isError = Boolean(error);
+const PlanRow = memo(function PlanRow({ plan, error, isSubmitted, onUpdate, onRemove }) {
+  const isError = isSubmitted && Boolean(error);
   return (
     <div className={`transition-colors ${isError ? 'bg-red-50/20' : 'hover:bg-gray-50/40'}`}>
       <div
@@ -162,13 +162,6 @@ const PlanRow = memo(function PlanRow({ plan, error, onUpdate, onRemove }) {
           </button>
         </div>
       </div>
-
-      {error && (
-        <div className="px-5 sm:px-6 pb-2.5 -mt-1 flex items-center gap-1.5 text-[11px] text-red-600 font-medium">
-          <IconAlertCircle className="w-3.5 h-3.5 shrink-0 text-red-500" />
-          <span>{error}</span>
-        </div>
-      )}
     </div>
   );
 });
@@ -176,8 +169,8 @@ const PlanRow = memo(function PlanRow({ plan, error, onUpdate, onRemove }) {
 export default function Plans({ onContinue, initialPlans }) {
   const [plans, setPlans] = useState(initialPlans || []);
   const [planToDelete, setPlanToDelete] = useState(null);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
-  // Validate duplicate min-max ranges or invalid boundaries
   const planErrors = useMemo(() => {
     const errors = {};
     const rangeGroups = new Map();
@@ -203,12 +196,10 @@ export default function Plans({ onContinue, initialPlans }) {
       }
     });
 
-    rangeGroups.forEach((group, key) => {
+    rangeGroups.forEach((group) => {
       if (group.length > 1) {
-        const [minStr, maxStr] = key.split('_');
-        const formattedRange = `₹${Number(minStr).toLocaleString('en-IN')} – ₹${Number(maxStr).toLocaleString('en-IN')}`;
         group.forEach((p) => {
-          errors[p.id] = `Duplicate plan: You already have a plan configured for ${formattedRange}.`;
+          errors[p.id] = 'Duplicate plan range.';
         });
       }
     });
@@ -269,24 +260,23 @@ export default function Plans({ onContinue, initialPlans }) {
 
   const handleSaveAndContinue = (e) => {
     e.preventDefault();
+    setIsSubmitted(true);
 
-    if (plans.length === 0) {
+    if (!plans.length) {
       toast.error('Please add at least one plan to continue.');
       return;
     }
 
-    const hasEmpty = plans.some(
-      (p) => String(p.minAmount ?? '').trim() === '' || String(p.maxAmount ?? '').trim() === ''
+    const hasIncomplete = plans.some(
+      (p) => !String(p.minAmount ?? '').trim() || !String(p.maxAmount ?? '').trim()
     );
-    if (hasEmpty) {
+    if (hasIncomplete) {
       toast.error('Please specify both Min and Max amounts for all plans.');
       return;
     }
 
-    const errorKeys = Object.keys(planErrors);
-    if (errorKeys.length > 0) {
-      const firstError = planErrors[errorKeys[0]];
-      toast.error(firstError);
+    if (hasDuplicateErrors) {
+      toast.error('Duplicate plans: Min & Max range must be unique.');
       return;
     }
 
@@ -316,13 +306,6 @@ export default function Plans({ onContinue, initialPlans }) {
             </p>
           </div>
 
-          {hasDuplicateErrors && (
-            <div className="mx-5 sm:mx-6 mt-4 p-2.5 bg-red-50/80 border border-red-200/80 rounded-lg flex items-center gap-2 text-xs text-red-700 font-medium">
-              <IconAlertCircle className="w-4 h-4 text-red-500 shrink-0" />
-              <span>Duplicate plans found: Each plan must have a unique Min and Max amount range.</span>
-            </div>
-          )}
-
           <div className="overflow-x-auto w-full">
             <div className="min-w-[1040px] w-full">
               <div
@@ -345,6 +328,7 @@ export default function Plans({ onContinue, initialPlans }) {
                       key={plan.id}
                       plan={plan}
                       error={planErrors[plan.id]}
+                      isSubmitted={isSubmitted}
                       onUpdate={handleUpdatePlan}
                       onRemove={handleRemovePlan}
                     />

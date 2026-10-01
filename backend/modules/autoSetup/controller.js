@@ -14,9 +14,11 @@ const AUTO_SETUP_ALLOWED_FIELDS = exports.AUTO_SETUP_ALLOWED_FIELDS = [
   'collectionWidgetPlacement', 'pdpPriceSelector', 'pdpSalePrice', 'pdpProductId', 'pdpProductHandle',
   'pdpProductName', 'pdpVariantId', 'pdpProductAvailable',
   'pdpProductUrl', 'pdpWidgetAppendTarget', 'pdpWidgetPlacement',
-  'cartItem', 'cartTotal', 'cartWidgetAppendTarget', 'cartWidgetPlacement',
+  'pdpFallbackSelector', 'pdpRerenderOnVariant',
+  'cartItem', 'cartTotal', 'cartWidgetAppendTarget', 'cartWidgetPlacement', 'cartFallbackSelector',
   'cartDrawerItem', 'cartDrawerTotal', 'cartDrawerWidgetAppendTarget', 'cartDrawerWidgetPlacement',
-  // 'minCartItem', 'minCartTotal', 'minCartWidgetAppendTarget', 'minCartWidgetPlacement',
+  'minCartItem', 'minCartTotal', 'minCartWidgetAppendTarget', 'minCartWidgetPlacement', 'minCartFallbackSelector',
+  'excludedProducts', 'excludedCollections',
 ];
 
 exports.getAutoSetup = async (req, res) => {

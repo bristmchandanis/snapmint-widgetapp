@@ -10,6 +10,9 @@ import MerchantTable from '../components/merchant/MerchantTable';
 import Plans from '@/components/widgets/Plans';
 import PriceBands from '@/components/widgets/PriceBands';
 import Configure from '@/components/widgets/Configure';
+import Customization from '@/components/widgets/Customization';
+import Coupons from '@/components/widgets/Coupons';
+import Targeting from '@/components/widgets/Targeting';
 import { IconSpinner } from '../components/common/Icons';
 
 const STEP_MAP = {
@@ -17,6 +20,10 @@ const STEP_MAP = {
   plans: 2,
   'price-bands': 3,
   configure: 4,
+  customisation: 5,
+  customization: 5,
+  coupons: 6,
+  targeting: 7,
 };
 
 export default function AllMerchants({ user, mode }) {
@@ -147,6 +154,47 @@ export default function AllMerchants({ user, mode }) {
             onBack={() => setOnboardingStep(3)}
             onContinue={(configuration) => {
               setWizardData((prev) => ({ ...prev, configuration }));
+              setOnboardingStep(5);
+            }}
+          />
+        )}
+
+        {onboardingStep === 5 && (
+          <Customization
+            merchantName={wizardData.name || targetMerchant?.name || "Neeman's"}
+            brandingMode={wizardData.brandingMode || targetMerchant?.brandingMode || "WHITE_LABEL"}
+            plans={wizardData.plans || targetMerchant?.plans || []}
+            priceBands={wizardData.priceBands || targetMerchant?.priceBands || {}}
+            configuration={wizardData.configuration || targetMerchant?.configuration || {}}
+            initialCustomization={wizardData.customization || targetMerchant?.customization}
+            onBack={() => setOnboardingStep(4)}
+            onContinue={(customization) => {
+              setWizardData((prev) => ({ ...prev, customization }));
+              setOnboardingStep(6);
+            }}
+          />
+        )}
+
+        {onboardingStep === 6 && (
+          <Coupons
+            merchant={targetMerchant}
+            wizardData={wizardData}
+            onBack={() => setOnboardingStep(5)}
+            onGoToConfigure={() => setOnboardingStep(4)}
+            onContinue={(couponsData) => {
+              setWizardData((prev) => ({ ...prev, ...couponsData }));
+              setOnboardingStep(7);
+            }}
+          />
+        )}
+
+        {onboardingStep === 7 && (
+          <Targeting
+            wizardData={wizardData}
+            selectedShop={targetMerchant}
+            onBack={() => setOnboardingStep(6)}
+            onComplete={(targetingData) => {
+              setWizardData((prev) => ({ ...prev, ...targetingData }));
               handleClose();
             }}
           />

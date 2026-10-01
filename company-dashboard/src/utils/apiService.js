@@ -126,6 +126,20 @@ const ApiService = () => {
 
     deleteCashbackOffer: async (id) => await deleteData(`/cashback-offer/delete/${id}`),
 
+    // Coupons Management
+    getCoupons: async (params = {}) => {
+      const query = new URLSearchParams(params).toString();
+      return await getData(`/coupon${query ? `?${query}` : ''}`);
+    },
+
+    validateAndAddCoupon: async (data) => await postData('/coupon/validate-and-add', data),
+
+    toggleCouponSelectable: async (id, isSelectable) => await patchData(`/coupon/${id}/toggle`, { isSelectable }),
+
+    syncShopifyCoupons: async (data) => await postData('/coupon/sync', data),
+
+    loadDemoCoupons: async (data) => await postData('/coupon/demo-sync', data),
+
     // Store Colors (Shop Table & Metafields)
     getStoreColors: async (shopId) => await getData(`/shop/color-customization/get?shopId=${encodeURIComponent(shopId)}`),
 
@@ -148,6 +162,8 @@ const ApiService = () => {
 
     // Auto Setup Selectors
     getAutoSetup: async (shopId) => await getData(`/auto-setup/get?shopId=${encodeURIComponent(shopId)}`),
+
+    updateAutoSetup: async (data) => await putData('/auto-setup/updateAutoSetup', data),
 
     // Merchant Credentials
     getMerchantCredentials: async () => await getData('/merchant-credentials/list'),

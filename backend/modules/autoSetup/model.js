@@ -119,9 +119,19 @@ const AutoSetup = sequelize.define('auto_setup', {
     defaultValue: '',
   },
   pdpWidgetPlacement: {
-    type: SEQUELIZE_DATA_TYPE.ENUM('before', 'after'),
+    type: SEQUELIZE_DATA_TYPE.STRING,
     allowNull: false,
     defaultValue: 'after',
+  },
+  pdpFallbackSelector: {
+    type: SEQUELIZE_DATA_TYPE.STRING,
+    allowNull: true,
+    defaultValue: '',
+  },
+  pdpRerenderOnVariant: {
+    type: SEQUELIZE_DATA_TYPE.STRING,
+    allowNull: true,
+    defaultValue: 'on',
   },
 
   // Cart Selectors
@@ -141,9 +151,14 @@ const AutoSetup = sequelize.define('auto_setup', {
     defaultValue: '',
   },
   cartWidgetPlacement: {
-    type: SEQUELIZE_DATA_TYPE.ENUM('before', 'after'),
+    type: SEQUELIZE_DATA_TYPE.STRING,
     allowNull: false,
     defaultValue: 'after',
+  },
+  cartFallbackSelector: {
+    type: SEQUELIZE_DATA_TYPE.STRING,
+    allowNull: true,
+    defaultValue: '',
   },
 
   // Cart Drawer Selectors
@@ -163,12 +178,11 @@ const AutoSetup = sequelize.define('auto_setup', {
     defaultValue: '',
   },
   cartDrawerWidgetPlacement: {
-    type: SEQUELIZE_DATA_TYPE.ENUM('before', 'after'),
+    type: SEQUELIZE_DATA_TYPE.STRING,
     allowNull: false,
     defaultValue: 'after',
   },
 
-  /*
   // Mini Cart Selectors
   minCartItem: {
     type: SEQUELIZE_DATA_TYPE.STRING,
@@ -186,11 +200,27 @@ const AutoSetup = sequelize.define('auto_setup', {
     defaultValue: '',
   },
   minCartWidgetPlacement: {
-    type: SEQUELIZE_DATA_TYPE.ENUM('before', 'after'),
+    type: SEQUELIZE_DATA_TYPE.STRING,
     allowNull: false,
     defaultValue: 'after',
   },
-  */
+  minCartFallbackSelector: {
+    type: SEQUELIZE_DATA_TYPE.STRING,
+    allowNull: true,
+    defaultValue: '',
+  },
+
+  // Product / Collection Exclusions
+  excludedProducts: {
+    type: SEQUELIZE_DATA_TYPE.TEXT,
+    allowNull: true,
+    defaultValue: '',
+  },
+  excludedCollections: {
+    type: SEQUELIZE_DATA_TYPE.TEXT,
+    allowNull: true,
+    defaultValue: '',
+  },
 }, {
   timestamps: true,
   tableName: 'auto_setups',
