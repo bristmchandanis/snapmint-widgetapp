@@ -56,7 +56,7 @@ const MERCHANT_FIELDS = [
   },
 ];
 
-export default function AddMerchant({ onSuccess, disabled = false, initialData = {} }) {
+export default function AddMerchant({ onSuccess, disabled = false, initialData = {}, isEdit = false }) {
   const [formData, setFormData] = useState(() => ({
     name: initialData.name || '',
     merchantId: initialData.merchantId || '',
@@ -101,7 +101,7 @@ export default function AddMerchant({ onSuccess, disabled = false, initialData =
     <div className="max-w-6xl mx-auto space-y-6">
       <div>
         <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">
-          Add merchant
+          {isEdit || initialData?.id ? 'Edit merchant' : 'Add merchant'}
         </h1>
       </div>
 
@@ -185,7 +185,7 @@ export default function AddMerchant({ onSuccess, disabled = false, initialData =
             disabled={disabled || submitting}
             className="rounded-md h-9 px-5 bg-black hover:bg-gray-800 text-white font-bold text-xs shadow-xs cursor-pointer transition-all flex items-center gap-1.5 disabled:opacity-50"
           >
-            <span>{submitting ? 'Adding' : 'Add merchant'}</span>
+            <span>{submitting ? 'Saving...' : (isEdit || initialData?.id ? 'Continue' : 'Add merchant')}</span>
             <IconArrowRight className="w-4 h-4 text-white" />
           </Button>
         </div>

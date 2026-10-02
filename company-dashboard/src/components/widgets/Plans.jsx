@@ -29,14 +29,7 @@ const TABLE_HEADERS = [
   '',
 ];
 
-function SuffixedInput({
-  value,
-  onChange,
-  suffix,
-  placeholder = '',
-  error = false,
-  className = '',
-}) {
+function SuffixedInput({ value, onChange, suffix, placeholder = '', error = false, className = '' }) {
   return (
     <div className={`relative flex items-center ${className}`}>
       <input
@@ -45,15 +38,12 @@ function SuffixedInput({
         onChange={onChange}
         placeholder={placeholder}
         className={`w-full h-9.5 pl-3 pr-6 text-xs font-medium rounded-lg outline-none transition-all ${error
-          ? 'bg-red-50/20 text-red-900 border border-red-400 focus:border-red-500 focus:ring-1 focus:ring-red-400/20 placeholder:text-red-300'
-          : 'bg-white text-gray-900 border border-gray-200 focus:border-gray-400 focus:ring-1 focus:ring-gray-400/20'
+            ? 'bg-red-50/20 text-red-900 border border-red-400 focus:border-red-500 focus:ring-1 focus:ring-red-400/20 placeholder:text-red-300'
+            : 'bg-white text-gray-900 border border-gray-200 focus:border-gray-400 focus:ring-1 focus:ring-gray-400/20'
           }`}
       />
       {suffix && (
-        <span
-          className={`absolute right-2.5 text-xs font-semibold pointer-events-none ${error ? 'text-red-400' : 'text-gray-400'
-            }`}
-        >
+        <span className={`absolute right-2.5 text-xs font-semibold pointer-events-none ${error ? 'text-red-400' : 'text-gray-400'}`}>
           {suffix}
         </span>
       )}
@@ -64,22 +54,19 @@ function SuffixedInput({
 function SegmentedToggle({ options, value, onChange }) {
   return (
     <div className="flex items-center bg-[#F3F5F8] p-1 rounded-md border border-gray-200/80 h-9.5 gap-1">
-      {options.map((opt) => {
-        const isSelected = value === opt.value;
-        return (
-          <button
-            key={opt.value}
-            type="button"
-            onClick={() => onChange(opt.value)}
-            className={`flex-1 h-full px-1.5 text-xs rounded transition-all cursor-pointer flex items-center justify-center outline-none focus:outline-none focus-visible:outline-none focus-visible:ring-0 ${isSelected
+      {options.map((opt) => (
+        <button
+          key={opt.value}
+          type="button"
+          onClick={() => onChange(opt.value)}
+          className={`flex-1 h-full px-1.5 text-xs rounded transition-all cursor-pointer flex items-center justify-center outline-none ${value === opt.value
               ? 'bg-white text-gray-900 font-bold border border-gray-400 shadow-2xs'
               : 'text-gray-500 hover:text-gray-900 font-medium border border-transparent'
-              }`}
-          >
-            {opt.label}
-          </button>
-        );
-      })}
+            }`}
+        >
+          {opt.label}
+        </button>
+      ))}
     </div>
   );
 }
@@ -173,35 +160,24 @@ export default function Plans({ onContinue, initialPlans }) {
 
   const planErrors = useMemo(() => {
     const errors = {};
-    const rangeGroups = new Map();
+    const ranges = {};
 
-    plans.forEach((plan) => {
-      const minTrim = String(plan.minAmount ?? '').trim();
-      const maxTrim = String(plan.maxAmount ?? '').trim();
+    plans.forEach(({ id, minAmount, maxAmount }) => {
+      const min = Number(String(minAmount ?? '').trim());
+      const max = Number(String(maxAmount ?? '').trim());
 
-      const minVal = minTrim !== '' && !isNaN(Number(minTrim)) ? Number(minTrim) : null;
-      const maxVal = maxTrim !== '' && !isNaN(Number(maxTrim)) ? Number(maxTrim) : null;
-
-      if (minVal !== null && maxVal !== null) {
-        if (minVal >= maxVal) {
-          errors[plan.id] = 'Min amount must be less than Max amount.';
-          return;
+      if (minAmount !== '' && maxAmount !== '' && !isNaN(min) && !isNaN(max)) {
+        if (min >= max) {
+          errors[id] = 'Min amount must be less than Max amount.';
+        } else {
+          const key = `${min}_${max}`;
+          ranges[key] ? ranges[key].push(id) : (ranges[key] = [id]);
         }
-
-        const rangeKey = `${minVal}_${maxVal}`;
-        if (!rangeGroups.has(rangeKey)) {
-          rangeGroups.set(rangeKey, []);
-        }
-        rangeGroups.get(rangeKey).push(plan);
       }
     });
 
-    rangeGroups.forEach((group) => {
-      if (group.length > 1) {
-        group.forEach((p) => {
-          errors[p.id] = 'Duplicate plan range.';
-        });
-      }
+    Object.values(ranges).forEach((ids) => {
+      if (ids.length > 1) ids.forEach((id) => (errors[id] = 'Duplicate plan range.'));
     });
 
     return errors;
@@ -232,18 +208,20 @@ export default function Plans({ onContinue, initialPlans }) {
 
   const handleAddPlan = () => {
     const isFirst = plans.length === 0;
-    const newPlan = {
-      id: `plan-${Date.now()}`,
-      dpType: 'percent',
-      downPayment: '25',
-      tenure: '3',
-      repaymentType: 'zero',
-      emiPlanPercent: '25',
-      isCalculated: false,
-      minAmount: isFirst ? '199' : '',
-      maxAmount: isFirst ? '200000' : '',
-    };
-    setPlans((prev) => [...prev, newPlan]);
+    setPlans((prev) => [
+      ...prev,
+      {
+        id: `plan-${Date.now()}`,
+        dpType: 'percent',
+        downPayment: '25',
+        tenure: '3',
+        repaymentType: 'zero',
+        emiPlanPercent: '25',
+        isCalculated: false,
+        minAmount: isFirst ? '199' : '',
+        maxAmount: isFirst ? '200000' : '',
+      },
+    ]);
   };
 
   const handleRemovePlan = useCallback((plan) => {

@@ -8,7 +8,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import FormField from '../common/FormField';
-import { toast } from 'sonner';
 
 const PLACEMENTS = [
   { id: 'pdp', title: 'PDP', desc: 'Product detail page', Icon: FileText },
@@ -128,7 +127,7 @@ const PlacementCard = memo(function PlacementCard({ item, data, onChange }) {
               </div>
 
               {data.capture?.shipping && (
-                <div className="pt-2 border-t border-gray-200/60 max-w-[200px]">
+                <div className="pt-2 border-gray-200/60 max-w-[200px]">
                   <FormField
                     id={`${id}-shipping`}
                     label="Shipping fee applies below"
@@ -159,7 +158,6 @@ export default function Configure({ initialConfig, onContinue }) {
   }, []);
 
   const handleSave = () => {
-    toast.success('Placement configuration saved successfully!');
     if (onContinue) onContinue(config);
   };
 

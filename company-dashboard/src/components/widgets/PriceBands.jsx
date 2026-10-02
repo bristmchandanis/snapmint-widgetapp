@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { formatCurrency } from '../../utils/helpers';
+import { computePriceBands } from './shared/helpers.jsx';
 
 const REFERENCE_PLANS = [
   { id: 'ref-1', type: 'fixed', tenure: 1, dp: 1, min: 199, max: 1000 },
@@ -14,74 +15,8 @@ const REFERENCE_PLANS = [
   { id: 'ref-12m', type: 'percentage', tenure: 12, dp: 25, min: 15000, max: 200000 },
 ];
 
-const ALLOWED_PERCENT_TENURES = new Set([2, 3, 4, 5, 6, 9, 12]);
-const ALLOWED_PIE_TENURES = new Set([2, 3]);
-const ALLOWED_FIXED_DP_TENURES = new Set([1, 2, 3]);
-
 const GRID_ROW =
   'grid grid-cols-[1.3fr_120px_1.4fr_2.2fr] gap-4 items-center px-6 py-3.5';
-
-function getAllowedStyles(plans) {
-  if (plans.length > 1) {
-    const isMultiBox =
-      plans.length <= 4 &&
-      plans.every((p) => p.type === 'percentage' && ALLOWED_PERCENT_TENURES.has(p.tenure));
-    return isMultiBox ? ['box'] : [];
-  }
-
-  const plan = plans[0];
-  if (!plan) return [];
-
-  if (plan.type === 'fixed') {
-    const isValid =
-      ([0, 1].includes(plan.dp) && ALLOWED_FIXED_DP_TENURES.has(plan.tenure)) ||
-      (plan.dp === 19 && [2, 3].includes(plan.tenure));
-    return isValid ? ['fixed-dp'] : [];
-  }
-
-  const allowed = [];
-  if (ALLOWED_PIE_TENURES.has(plan.tenure)) allowed.push('pie');
-  if (ALLOWED_PERCENT_TENURES.has(plan.tenure)) allowed.push('box');
-  return allowed;
-}
-
-function computePriceBands(plans) {
-  const validPlans = (plans || []).filter((p) => p.min > 0 && p.max >= p.min);
-  if (!validPlans.length) return [];
-
-  const boundaries = validPlans.flatMap((p) => [p.min, p.max + 1]);
-  const edges = [...new Set(boundaries)].sort((a, b) => a - b);
-
-  const bands = [];
-  for (let i = 0; i < edges.length - 1; i++) {
-    const min = edges[i];
-    const max = edges[i + 1] - 1;
-
-    const activePlans = validPlans.filter((p) => p.min <= min && p.max >= max);
-
-    const grouped = {};
-    for (const plan of activePlans) {
-      const key = `${plan.type}:${plan.dp}`;
-      if (!grouped[key]) grouped[key] = [];
-      grouped[key].push(plan);
-    }
-
-    const groups = Object.entries(grouped).map(([dpKey, groupPlans]) => {
-      groupPlans.sort((a, b) => a.tenure - b.tenure);
-      const allowed = getAllowedStyles(groupPlans);
-      return {
-        key: `${min}-${max}-${dpKey}`,
-        plans: groupPlans,
-        allowed,
-        defaultStyle: allowed.includes('pie') ? 'pie' : allowed[0] || '',
-      };
-    });
-
-    bands.push({ min, max, groups });
-  }
-
-  return bands;
-}
 
 function getStyleButtonClass(isSelected, isAllowed) {
   if (isSelected) {
@@ -211,18 +146,18 @@ export default function PriceBands({ plans = [], onBack, onContinue }) {
   }, [isExample, plans]);
 
   const bands = useMemo(() => computePriceBands(activePlans), [activePlans]);
-  const activeBandsCount = bands.filter((b) => b.groups.length > 0).length;
+  const activeBandsCount = useMemo(() => bands.filter((b) => b.groups.length > 0).length, [bands]);
+
+  const { minRange, maxRange } = useMemo(() => ({
+    minRange: bands.length > 0 ? formatCurrency(bands[0].min) : '₹199',
+    maxRange: bands.length > 0 ? formatCurrency(bands[bands.length - 1].max) : '₹2,00,000',
+  }), [bands]);
 
   const handleSelectStyle = useCallback((groupKey, style) => {
     setChoices((prev) => ({ ...prev, [groupKey]: style }));
   }, []);
 
-  const handleSaveStyles = () => {
-    if (onContinue) onContinue({ bands, choices });
-  };
-
-  const minRange = bands.length > 0 ? formatCurrency(bands[0].min) : '₹199';
-  const maxRange = bands.length > 0 ? formatCurrency(bands[bands.length - 1].max) : '₹2,00,000';
+  const handleSaveStyles = () => onContinue?.({ bands, choices });
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
@@ -248,7 +183,7 @@ export default function PriceBands({ plans = [], onBack, onContinue }) {
 
         <div className="overflow-x-auto w-full">
           <div className="min-w-[960px] w-full">
-            <div className="grid grid-cols-[1.3fr_120px_1.4fr_2.2fr] gap-4 items-center px-6 py-3 border-y border-gray-200 bg-gray-50/90 text-[10px] font-bold tracking-wider text-gray-500 uppercase">
+            <div className={`${GRID_ROW} border-y border-gray-200 bg-gray-50/90 text-[10px] font-bold tracking-wider text-gray-500 uppercase`}>
               <div>Order value</div>
               <div>Down payment</div>
               <div>Eligible tenures</div>
@@ -323,7 +258,7 @@ export default function PriceBands({ plans = [], onBack, onContinue }) {
             type="button"
             disabled={isExample}
             onClick={handleSaveStyles}
-            className="rounded-md h-9 px-5 bg-black hover:bg-gray-800 text-white font-bold text-xs shadow-xs cursor-pointer transition-all flex items-center gap-1.5"
+            className="rounded-md h-9 px-5 bg-black hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-xs shadow-xs cursor-pointer transition-all flex items-center gap-1.5"
           >
             <span>Save styles</span>
           </Button>

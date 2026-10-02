@@ -99,6 +99,8 @@
     box-shadow: var(--snp-shadow-modal);
     position: relative;
     overflow: hidden;
+    font-family: var(--snp-font-body, var(--snp-font-inter));
+    font-style: var(--snp-font-body-style, normal);
 }
 
 /* Close Button */
@@ -135,7 +137,8 @@
     font-weight: 500;
     color: var(--snp-color-text-secondary);
     line-height: 22px;
-    font-family: var(--snp-font-family);
+    font-family: var(--snp-font-title, var(--snp-font-family));
+    font-style: var(--snp-font-title-style, normal);
 }
 
 .snp-amount-highlight {
@@ -143,7 +146,8 @@
     font-weight: 700;
     color: var(--snp-color-text-primary);
     line-height: 40px;
-    font-family: var(--snp-font-family);
+    font-family: var(--snp-font-title, var(--snp-font-family));
+    font-style: var(--snp-font-title-style, normal);
 }
 
 .snp-active {
@@ -224,11 +228,6 @@
     font-family: var(--snp-font-inter);
 }
 
-.snp-card-label-active {
-    color: var(--snp-color-primary);
-    font-weight: 700;
-}
-
 /* Active Card Bottom Badge */
 .snp-card-badge {
     position: absolute;
@@ -297,64 +296,7 @@
     transform: translateY(0.5px);
 }
 
-
 /* coupon apply */
-.snp-subtotal-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 4px;
-}
-
-.snp-subtotal-text {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--snp-color-text-muted);
-    line-height: 16px;
-    font-family: 'Inter';
-}
-
-.snp-subtotal-amount {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--snp-color-text-primary);
-    line-height: 20px;
-    font-family: 'Inter';
-}
-
-.snp-coupon-applied-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 4px;
-}
-
-.snp-coupon-applied-left {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.snp-coupon-code {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--snp-color-text-primary);
-    line-height: 16px;
-}
-
-.snp-coupon-status {
-    font-size: 12px;
-    font-weight: 500;
-    color: #166534;
-    line-height: 16px;
-}
-
-.snp-coupon-applied-amount {
-    font-size: 14px;
-    font-weight: 500;
-    color: #22C55E;
-    line-height: 20px;
-}
 
 /* total order value chevron */
 .snp-total-chevron {
@@ -377,32 +319,6 @@
 
 .snp-coupon-row:hover {
     background-color: #FCE4F0;
-}
-
-.snp-coupon-left {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.snp-coupon-badge {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.snp-coupon-text {
-    font-size: 10px;
-    font-weight: 600;
-    color: var(--snp-color-text-primary);
-    font-family: "Inter", sans-serif;
-    line-height: 13.333px;
-}
-
-.snp-coupon-arrow {
-    display: block;
-    color: var(--snp-color-text-muted);
-    margin-left: 6px;
 }
 
 /* Features Grid Section */
@@ -472,95 +388,8 @@
 }
 
 /* WL */
-.snp-wl-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #FFFFFF;
-    width: 100%;
-}
-
-.snp-wl-powered {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding-bottom: 10px;
-}
-
-.snp-wl-powered-text {
-    font-size: 11px;
-    line-height: 14px;
-    font-weight: 400;
-    color: #94A4B8;
-    font-family: "Inter", sans-serif;
-}
-
-.snp-wl-bottom-section {
-    width: 100%;
-    background-color: #F1F5F9;
-    border-bottom-left-radius: 16px;
-    border-bottom-right-radius: 16px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.snp-wl-pay-line {
-    width: 100%;
-    padding: 16px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    box-sizing: border-box;
-}
-
-.snp-wl-pay-text {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--snp-color-merchant-text);
-    font-family: "Inter", sans-serif;
-    line-height: 20px;
-}
-
-.snp-wl-brand {
-    padding-inline: 5px;
-}
-
-.snp-wl-brand svg {
-    display: inline-block;
-}
 
 /* credit limit-with sellected payment */
-.snp-credit-pay-banner {
-    margin: 0 24px 16px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    box-sizing: border-box;
-}
-
-.snp-credit-pay-text {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--snp-color-merchant-text);
-    line-height: 20px;
-    font-family: "Inter", var(--snp-font-family);
-}
-
-.snp-credit-brand-badge {
-    background-color: var(--snp-color-primary);
-    padding: 3px 5px;
-    border-radius: 3px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.snp-credit-brand-badge svg {
-    display: block;
-}
 
 .snp-credit-selected-container {
     width: 100%;
@@ -704,92 +533,6 @@
 }
 
 /* with size */
-.snp-size-section {
-    width: 100%;
-    padding: 4px 24px 20px 24px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    box-sizing: border-box;
-}
-
-.snp-size-heading {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--snp-color-text-primary);
-    font-family: "inter";
-    text-align: center;
-    line-height: 19.6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 5px;
-    margin-bottom: 6px;
-}
-
-.snp-snapmint-inline-badge {
-    background-color: var(--snp-color-primary);
-    color: var(--snp-color-text-white);
-    font-size: 11px;
-    font-weight: 800;
-    padding: 2px 7px;
-    border-radius: 4px;
-    display: inline-block;
-    vertical-align: middle;
-    line-height: 1.2;
-    letter-spacing: -0.2px;
-    font-family: var(--snp-font-family);
-}
-
-.snp-size-subtitle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    font-size: 13px;
-    font-family: var(--snp-font-family);
-    margin-bottom: 16px;
-}
-
-.snp-size-label {
-    font-size: 13px;
-    color: #64768B;
-    font-weight: 500;
-    line-height: 16px;
-    font-family: 'Inter';
-}
-
-.snp-size-value {
-    color: var(--snp-color-text-primary);
-    font-weight: 500;
-    line-height: 16px;
-}
-
-.snp-size-divider {
-    color: var(--snp-color-merchant-border);
-}
-
-.snp-edit-icon {
-    display: inline-block;
-    vertical-align: middle;
-    margin-left: 2px;
-    cursor: pointer;
-}
-
-.snp-size-select-row {
-    display: flex;
-    gap: 16px;
-    width: 100%;
-    margin-bottom: 14px;
-}
-
-.snp-select-wrapper {
-    flex: 1;
-    position: relative;
-    display: flex;
-    align-items: center;
-}
 
 .snp-select {
     width: 100%;
@@ -816,149 +559,7 @@
     color: var(--snp-color-text-primary);
 }
 
-.snp-select-arrow {
-    position: absolute;
-    right: 12px;
-    pointer-events: none;
-    color: var(--snp-color-text-muted);
-}
-
-.snp-size-buy-btn {
-    width: 100%;
-    height: 42px;
-    background-color: var(--snp-color-primary);
-    color: var(--snp-color-text-white);
-    border: none;
-    border-radius: 8px;
-    padding: 10px 16px;
-    font-size: 14px;
-    font-weight: 600;
-    font-family: "inter", var(--snp-font-family);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: opacity 0.2s ease;
-    line-height: 20px;
-}
-
-.snp-size-buy-btn:hover {
-    opacity: 0.92;
-}
-
 /* personal details */
-.snp-personal-details {
-    width: 100%;
-    padding: 4px 24px 20px 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    box-sizing: border-box;
-}
-
-.snp-input-row {
-    display: flex;
-    gap: 16px;
-    width: 100%;
-}
-
-.snp-input-group {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    position: relative;
-}
-
-.snp-input {
-    width: 100%;
-    background-color: var(--snp-color-card-bg);
-    border: 1px solid var(--snp-color-merchant-border);
-    border-radius: 6px;
-    padding: 7px 12px;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--snp-color-text-primary);
-    font-family: var(--snp-font-family);
-    outline: none;
-    box-sizing: border-box;
-    transition: border-color 0.2s ease;
-    line-height: 20px;
-}
-
-.snp-input::placeholder {
-    color: var(--snp-color-offer-note);
-    opacity: 1;
-    font-weight: 500;
-}
-
-.snp-input:focus {
-    border-color: var(--snp-color-primary);
-}
-
-.snp-phone-group {
-    background-color: var(--snp-color-card-bg);
-    border: 1px solid var(--snp-color-merchant-border);
-    border-radius: 8px;
-    padding: 0 16px;
-    padding-right: 0px;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    width: 100%;
-}
-
-.snp-phone-group:focus-within {
-    border-color: var(--snp-color-primary);
-}
-
-.snp-phone-prefix {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--snp-color-text-primary);
-    font-family: var(--snp-font-family);
-    margin-right: 8px;
-    white-space: nowrap;
-    line-height: 20px;
-}
-
-.snp-phone-input {
-    border: none;
-    border-radius: 0;
-    padding: 8px 0;
-    background: transparent;
-}
-
-.snp-phone-input:focus {
-    border-color: transparent;
-}
-
-.snp-submit-btn {
-    width: 100%;
-    height: 100%;
-    min-height: 40px;
-    background-color: var(--snp-color-primary);
-    color: var(--snp-color-text-white);
-    border: none;
-    border-radius: 8px;
-    padding: 10px 14px;
-    font-size: 14px;
-    font-weight: 600;
-    font-family: "inter";
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: opacity 0.2s ease;
-    line-height: 20px;
-}
-
-.snp-submit-btn:hover {
-    opacity: 0.92;
-}
 
 .snp-btn-chevron {
     color: var(--snp-color-text-white);
@@ -1107,27 +708,6 @@
 }
 
 /* default cashback */
-.snp-merchant-pay-later {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    width: fit-content;
-    margin: 0 auto 16px auto;
-}
-
-.snp-merchant-logo {
-    display: block;
-    flex-shrink: 0;
-}
-
-.snp-merchant-text {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--snp-color-merchant-text);
-    white-space: nowrap;
-    line-height: 20px;
-}
 
 /* default cashback */
 .snp-discount-banner {
@@ -1194,691 +774,55 @@
     font-family: var(--snp-font-family);
 }
 
-
-
-
-
-
-
-
 /* ==========================================================================
    Terms & Conditions Screen
    ========================================================================== */
 
-.snp-tnc-modal {
-    padding: 24px;
-}
-
 /* Top Bar : Back + Logo + Close */
-.snp-tnc-topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 16px;
-}
-
-.snp-tnc-logo {
-    background-color: #FF6F00;
-    padding: 4px 6px;
-    border-radius: 4px;
-}
-
-.snp-tnc-nav-btn {
-    background: transparent;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    color: var(--snp-color-text-muted);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    border-radius: 50%;
-    transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.snp-tnc-nav-btn:hover {
-    background-color: var(--snp-color-inner-bg);
-    color: var(--snp-color-text-primary);
-}
 
 .snp-tnc-back-icon,
-.snp-tnc-close-icon {
-    display: block;
-}
 
 /* Brand Logo */
-.snp-tnc-logo {
-    display: block;
-    flex-shrink: 0;
-}
-
-.snp-tnc-logo-bg {
-    fill: var(--snp-color-primary);
-}
-
-.snp-tnc-logo-snap path {
-    fill: var(--snp-color-text-white);
-}
-
-.snp-tnc-logo-mint path {
-    fill: var(--snp-color-text-primary);
-}
 
 /* Heading Section */
-.snp-tnc-header {
-    text-align: center;
-    margin-bottom: 16px;
-}
-
-.snp-tnc-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--snp-color-text-primary);
-    line-height: 26px;
-    font-family: var(--snp-font-family);
-}
-
-.snp-tnc-subtitle {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--snp-color-text-primary);
-    line-height: 20px;
-    font-family: "inter";
-    margin-top: 2px;
-}
 
 /* Terms List */
-.snp-tnc-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.snp-tnc-item {
-    position: relative;
-    padding-left: 11px;
-    font-size: 12px;
-    font-weight: 500;
-    color: #151E29;
-    line-height: 16px;
-    font-family: "Inter", sans-serif;
-}
-
-.snp-tnc-item::before {
-    content: "";
-    position: absolute;
-    top: 6px;
-    left: 0;
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background-color: var(--snp-color-text-muted);
-}
-
-.snp-tnc-strong {
-    font-weight: 700;
-    color: var(--snp-color-text-primary);
-}
 
 /* ==========================================================================
    Product Details Screen
    ========================================================================== */
 
-.snp-pd-modal {
-    padding: 24px;
-}
-
 /* Header : Title + Close */
-.snp-pd-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid var(--snp-color-divider);
-    margin: 0 -24px;
-    padding-left: 24px;
-    padding-right: 24px;
-}
-
-.snp-pd-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--snp-color-text-primary);
-    line-height: 26px;
-    font-family: var(--snp-font-family);
-}
-
-.snp-pd-close-btn {
-    background: transparent;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    color: var(--snp-color-text-muted);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    border-radius: 50%;
-    transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.snp-pd-close-btn:hover {
-    background-color: var(--snp-color-inner-bg);
-    color: var(--snp-color-text-primary);
-}
-
-.snp-pd-close-icon {
-    display: block;
-}
 
 /* Product List */
-.snp-pd-list {
-    list-style: none;
-}
-
-.snp-pd-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--snp-color-divider);
-}
-
-.snp-pd-item:first-of-type {
-    padding-top: 24px;
-}
-
-.snp-pd-item:last-of-type {
-    padding-bottom: 24px;
-}
 
 /* Product Thumbnail */
-.snp-pd-thumb {
-    display: block;
-    flex-shrink: 0;
-}
-
-.snp-pd-thumb-bg {
-    fill: var(--snp-color-dark-slice);
-}
-
-.snp-pd-thumb-fabric {
-    fill: var(--snp-color-offer-note);
-}
-
-.snp-pd-thumb-detail {
-    fill: var(--snp-color-text-muted);
-}
 
 /* Product Info */
-.snp-pd-info {
-    flex: 1;
-    min-width: 0;
-}
-
-.snp-pd-name {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--snp-color-text-primary);
-    line-height: 20px;
-    font-family: "inter";
-}
-
-.snp-pd-meta {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    margin-top: 2px;
-}
-
-.snp-pd-meta-text {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--snp-color-text-muted);
-    line-height: 16px;
-    font-family: "Inter", sans-serif;
-}
-
-.snp-pd-meta-divider {
-    font-size: 12px;
-    font-weight: 400;
-    color: #334255;
-    line-height: 16px;
-}
-
-.snp-pd-qty {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--snp-color-text-muted);
-    line-height: 16px;
-    font-family: "Inter", sans-serif;
-    margin-top: 2px;
-}
-
-.snp-pd-price {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--snp-color-text-primary);
-    line-height: 20px;
-    font-family: "inter";
-    white-space: nowrap;
-    flex-shrink: 0;
-}
 
 /* Price Summary */
-.snp-pd-summary {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding: 16px 0px;
-    padding-bottom: 4px;
-}
-
-.snp-pd-summary-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-}
-
-.snp-pd-summary-label {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--snp-color-text-muted);
-    line-height: 16px;
-    font-family: "Inter", sans-serif;
-}
-
-.snp-pd-summary-value {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--snp-color-text-muted);
-    line-height: 20px;
-    font-family: "Inter", sans-serif;
-    white-space: nowrap;
-}
-
-.snp-pd-info-icon {
-    display: block;
-    color: var(--snp-color-offer-note);
-    flex-shrink: 0;
-}
 
 /* Coupon Applied Row */
-.snp-pd-coupon-icon {
-    display: block;
-    flex-shrink: 0;
-}
-
-.snp-pd-coupon-text {
-    color: #166534;
-}
-
-.snp-pd-coupon-text span {
-    color: var(--snp-color-text-muted);
-}
-
-.snp-pd-discount-value {
-    color: #22C55E;
-}
 
 /* Total Order Value */
-.snp-pd-total-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-}
-
-.snp-pd-total-label {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--snp-color-text-muted);
-    line-height: 20px;
-    font-family: "inter";
-}
-
-.snp-pd-total-value {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--snp-color-text-primary);
-    line-height: 24px;
-    font-family: "inter";
-    white-space: nowrap;
-}
 
 /* ==========================================================================
    coupons css
    ========================================================================== */
 
-.snp-cpn-modal {
-    padding: 24px 24px 0 24px;
-}
-
 /* Top Bar : Back + Title + Close */
-.snp-cpn-topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 16px;
-}
-
-.snp-cpn-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--snp-color-text-primary);
-    line-height: 26px;
-    font-family: var(--snp-font-family);
-    text-align: center;
-    flex: 1;
-}
-
-.snp-cpn-nav-btn {
-    background: transparent;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    color: var(--snp-color-text-muted);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    border-radius: 50%;
-    transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.snp-cpn-nav-btn:hover {
-    background-color: var(--snp-color-inner-bg);
-    color: var(--snp-color-text-primary);
-}
-
-.snp-cpn-nav-icon {
-    display: block;
-}
 
 /* Price Summary */
-.snp-cpn-summary {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.snp-cpn-summary-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-}
-
-.snp-cpn-summary-label {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--snp-color-text-muted);
-    line-height: 16px;
-    font-family: "Inter", sans-serif;
-}
-
-.snp-cpn-summary-value {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--snp-color-text-muted);
-    line-height: 20px;
-    font-family: "Inter", sans-serif;
-    white-space: nowrap;
-}
-
-.snp-cpn-info-icon {
-    display: block;
-    color: var(--snp-color-offer-note);
-    flex-shrink: 0;
-}
 
 /* Applied Coupon Summary Row */
-.snp-cpn-applied-code {
-    color: var(--snp-color-text-primary);
-}
-
-.snp-cpn-applied-status {
-    color: #166534;
-}
-
-.snp-cpn-discount-value {
-    color: #22C55E;
-}
 
 /* Total Order Value Row */
-.snp-cpn-total-row {
-    margin-top: 2px;
-}
-
-.snp-cpn-total-label {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--snp-color-text-muted);
-    line-height: 16.615px;
-    font-family: "inter";
-}
-
-.snp-cpn-total-value {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--snp-color-text-primary);
-    line-height: 20px;
-    font-family: "inter";
-    white-space: nowrap;
-}
 
 /* Coupon Code Entry */
-.snp-cpn-entry {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 16px 0;
-}
-
-.snp-cpn-input {
-    flex: 1;
-    min-width: 0;
-    background-color: var(--snp-color-card-bg);
-    border: 1px solid var(--snp-color-merchant-border);
-    border-radius: 6px;
-    padding: 7px 12px;
-    font-size: 14px;
-    font-weight: 500;
-    color: #64768B;
-    font-family: "Inter", sans-serif;
-    line-height: 19.385px;
-    outline: none;
-    transition: border-color 0.2s ease;
-}
-
-.snp-cpn-input::placeholder {
-    color: var(--snp-color-offer-note);
-    opacity: 1;
-    font-weight: 500;
-}
-
-.snp-cpn-input:focus {
-    border-color: var(--snp-color-primary);
-}
-
-.snp-cpn-entry-btn {
-    background: transparent;
-    border: none;
-    border-radius: 6px;
-    padding: 8px 16px;
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: 600;
-    background-color: var(--snp-color-primary);
-    color: #fff;
-    line-height: 16px;
-    font-family: "inter";
-    white-space: nowrap;
-    flex-shrink: 0;
-    transition: opacity 0.2s ease;
-}
-
-.snp-cpn-entry-btn:hover {
-    opacity: 0.75;
-}
 
 /* Coupon List */
-.snp-cpn-list-wrap {
-    position: relative;
-}
-
-.snp-cpn-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    max-height: 210px;
-    overflow-y: auto;
-    padding-bottom: 16px;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-}
-
-.snp-cpn-list::-webkit-scrollbar {
-    display: none;
-}
-
-.snp-cpn-list-fade {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 46px;
-    background: linear-gradient(to bottom, transparent, var(--snp-color-modal-bg));
-    pointer-events: none;
-}
 
 /* Single Coupon Card */
-.snp-cpn-card {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    background-color: var(--snp-color-card-bg);
-    border: 1px solid var(--snp-color-divider);
-    border-radius: 12px;
-    padding: 14px;
-}
-
-.snp-cpn-card-applied {
-    background-color: #FDF2F7;
-    border-color: #FFB5C2;
-}
-
-.snp-cpn-card-body {
-    flex: 1;
-    min-width: 0;
-}
-
-.snp-cpn-card-head {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    margin-bottom: 4px;
-}
-
-.snp-cpn-badge-icon {
-    display: block;
-    flex-shrink: 0;
-}
-
-.snp-cpn-badge-shape {
-    fill: #BE185D;
-}
-
-.snp-cpn-badge-mark {
-    fill: #FDF2F7;
-}
-
-.snp-cpn-code {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--snp-color-text-muted);
-    line-height: 19.385px;
-    font-family: "inter";
-}
-
-.snp-cpn-status {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-}
-
-.snp-cpn-check-icon {
-    display: block;
-    flex-shrink: 0;
-}
-
-.snp-cpn-check-bg {
-    fill: #22C55E;
-}
-
-.snp-cpn-check-mark {
-    fill: none;
-    stroke: var(--snp-color-text-white);
-    stroke-width: 1.7;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-
-.snp-cpn-status-text {
-    font-size: 12px;
-    font-weight: 600;
-    color: #22C55E;
-    line-height: 16px;
-    font-family: "Inter", sans-serif;
-}
-
-.snp-cpn-card-applied .snp-cpn-card-desc {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--snp-color-text-muted);
-    line-height: 17px;
-    font-family: "Inter", sans-serif;
-}
-
-.snp-cpn-card-desc {
-    font-size: 12px;
-    font-weight: 500;
-    color: #64768B;
-    line-height: 17px;
-    font-family: "Inter", sans-serif;
-}
-
-.snp-cpn-action-btn {
-    background: transparent;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--snp-color-primary);
-    line-height: 19.385px;
-    font-family: "inter";
-    white-space: nowrap;
-    flex-shrink: 0;
-    transition: opacity 0.2s ease;
-}
-
-.snp-cpn-action-btn:hover {
-    opacity: 0.75;
-}
 
 /* ==========================================================================
    Multi-Plan Specific Styles
@@ -2047,28 +991,15 @@
     .snp-total-text,
     .snp-subtotal-text,
     .snp-coupon-code,
-    .snp-coupon-status {
-        font-size: 11px;
-        line-height: 15px;
-    }
 
     .snp-total-amount {
         font-size: 15px;
     }
 
     .snp-subtotal-amount,
-    .snp-coupon-applied-amount {
-        font-size: 13px;
-        line-height: 18px;
-    }
 
     .snp-coupon-row {
         padding: 5px 10px;
-    }
-
-    .snp-coupon-text {
-        font-size: 9px;
-        line-height: 12px;
     }
 
     /* Features Grid & Footer */
@@ -2091,24 +1022,7 @@
         line-height: 18px;
     }
 
-    .snp-wl-pay-line {
-        padding: 12px 16px;
-    }
-
-    .snp-wl-pay-text {
-        font-size: 13px;
-        line-height: 18px;
-    }
-
     /* Payment Selection & Banners */
-    .snp-credit-pay-banner {
-        margin: 0 16px 12px 16px;
-    }
-
-    .snp-credit-pay-text {
-        font-size: 13px;
-        line-height: 18px;
-    }
 
     .snp-select-payment-banner {
         width: fit-content;
@@ -2140,48 +1054,15 @@
 
     /* Size Section & Forms */
     .snp-size-section,
-    .snp-personal-details {
-        padding: 4px 16px 14px 16px;
-        gap: 10px;
-    }
-
-    .snp-size-heading {
-        font-size: 13px;
-        line-height: 18px;
-    }
 
     .snp-size-label,
-    .snp-size-value {
-        font-size: 12px;
-        line-height: 15px;
-    }
-
-    .snp-size-subtitle {
-        font-size: 12px;
-        margin-bottom: 12px;
-    }
 
     .snp-size-select-row,
-    .snp-input-row {
-        gap: 10px;
-        margin-bottom: 10px;
-    }
 
     .snp-select,
     .snp-input,
-    .snp-phone-prefix {
-        font-size: 13px;
-        line-height: 18px;
-        padding: 6px 10px;
-    }
 
     .snp-size-buy-btn,
-    .snp-submit-btn {
-        height: 38px;
-        font-size: 13px;
-        line-height: 18px;
-        padding: 8px 12px;
-    }
 
     .snp-trust-bar {
         padding-inline: 0;
@@ -2200,141 +1081,28 @@
     }
 
     /* Terms & Conditions Modal */
-    .snp-tnc-modal {
-        padding: 16px;
-    }
 
     .snp-tnc-topbar,
-    .snp-tnc-header {
-        margin-bottom: 12px;
-    }
-
-    .snp-tnc-title {
-        font-size: 16px;
-        line-height: 22px;
-    }
-
-    .snp-tnc-subtitle {
-        font-size: 13px;
-        line-height: 18px;
-    }
-
-    .snp-tnc-list {
-        gap: 12px;
-    }
-
-    .snp-tnc-item {
-        font-size: 11px;
-        line-height: 15px;
-        padding-left: 10px;
-    }
 
     /* Product Details Modal */
-    .snp-pd-modal {
-        padding: 16px;
-    }
-
-    .snp-pd-header {
-        margin: 0 -16px;
-        padding-left: 16px;
-        padding-right: 16px;
-        padding-bottom: 12px;
-    }
-
-    .snp-pd-title {
-        font-size: 16px;
-        line-height: 22px;
-    }
 
     .snp-pd-name,
     .snp-pd-price,
-    .snp-pd-total-label {
-        font-size: 13px;
-        line-height: 18px;
-    }
 
     .snp-pd-meta-text,
     .snp-pd-meta-divider,
     .snp-pd-qty,
-    .snp-pd-summary-label {
-        font-size: 11px;
-        line-height: 15px;
-    }
-
-    .snp-pd-summary-value {
-        font-size: 13px;
-        line-height: 18px;
-    }
-
-    .snp-pd-summary {
-        padding: 12px 0px 4px 0px;
-    }
-
-    .snp-pd-total-value {
-        font-size: 15px;
-        line-height: 22px;
-    }
 
     /* Coupons Modal */
-    .snp-cpn-modal {
-        padding: 16px 16px 0 16px;
-    }
-
-    .snp-cpn-topbar {
-        margin-bottom: 12px;
-    }
-
-    .snp-cpn-title {
-        font-size: 16px;
-        line-height: 22px;
-    }
 
     .snp-cpn-summary-label,
-    .snp-cpn-total-label {
-        font-size: 11px;
-        line-height: 15px;
-    }
 
     .snp-cpn-summary-value,
-    .snp-cpn-total-value {
-        font-size: 13px;
-        line-height: 18px;
-    }
-
-    .snp-cpn-entry {
-        padding: 12px 0;
-        gap: 8px;
-    }
-
-    .snp-cpn-input {
-        font-size: 13px;
-        line-height: 18px;
-        padding: 6px 10px;
-    }
-
-    .snp-cpn-entry-btn {
-        padding: 6px 12px;
-        font-size: 11px;
-        line-height: 15px;
-    }
-
-    .snp-cpn-card {
-        gap: 12px;
-        padding: 10px 12px;
-    }
 
     .snp-cpn-code,
-    .snp-cpn-action-btn {
-        font-size: 13px;
-        line-height: 18px;
-    }
 
     .snp-cpn-status-text,
     .snp-cpn-card-desc,
-    .snp-cpn-card-applied .snp-cpn-card-desc {
-        font-size: 11px;
-        line-height: 15px;
-    }
 
     /* Multi-Plan Specific */
     .snp-rest-subtitle {
@@ -2401,14 +1169,15 @@
 .snp-select-mode [data-snp-el] {
     cursor: crosshair !important;
     position: relative;
-    transition: outline 0.1s ease;
+    transition: box-shadow 0.12s ease;
 }
 
 .snp-select-mode [data-snp-el].snp-el-hover {
-    outline: 1px solid rgba(81, 52, 135, 0.45) !important;
+    outline: none !important;
+    box-shadow: 0 0 0 1px rgba(81, 52, 135, 0.35) !important;
 }
 
 .snp-select-mode [data-snp-el].snp-el-selected {
-    outline: 1.5px solid #513487 !important;
-    outline-offset: 1px !important;
+    outline: none !important;
+    box-shadow: 0 0 0 1px #513487 !important;
 }

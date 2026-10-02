@@ -14,7 +14,7 @@ const Role = require('./roleModel');
 const Shop = require('../shop/model');
 const MerchantCredential = require('../merchantCredential/model');
 const { getGraphQLClient } = require('../../utils/common');
-const { syncSnapmintMetafield, fetchSnapmintMerchantPlans } = require('../../utils/snapmint');
+const { syncSnapmintMetafield } = require('../../utils/snapmint');
 const { findShopRecord } = require('../../utils/shopHelper');
 const {
   WEB_PIXEL_CREATE_MUTATION,
@@ -330,31 +330,20 @@ const getStores = async (req, res) => {
       if (clean?.split('.')[0]) credMap.set(clean.split('.')[0], credObj);
     });
 
-    const plansCache = new Map();
-    const formattedShops = await Promise.all(
-      shops.map(async ({ token: _token, ...shop }) => {
-        const domain = (shop.myshopifyDomain || '').toLowerCase();
-        const cred = credMap.get(domain) || credMap.get(domain.split('.')[0]);
+    const formattedShops = shops.map(({ token: _token, ...shop }) => {
+      const domain = (shop.myshopifyDomain || '').toLowerCase();
+      const cred = credMap.get(domain) || credMap.get(domain.split('.')[0]);
 
-        if (cred) {
-          shop.merchantId = cred.merchantId || cred.mid || shop.merchantId;
-          shop.merchantToken = cred.token || shop.merchantToken;
-          shop.onboardStatus = ONBOARD_STATUS.APPROVED;
-          shop.widgetStatus = WIDGET_STATUS.ENABLED;
-          shop.appStatus = APP_STATUS.ENABLED;
-        }
+      if (cred) {
+        shop.merchantId = cred.merchantId || cred.mid || shop.merchantId;
+        shop.merchantToken = cred.token || shop.merchantToken;
+        shop.onboardStatus = ONBOARD_STATUS.APPROVED;
+        shop.widgetStatus = WIDGET_STATUS.ENABLED;
+        shop.appStatus = APP_STATUS.ENABLED;
+      }
 
-        if (shop.merchantToken) {
-          if (!plansCache.has(shop.merchantToken)) {
-            plansCache.set(shop.merchantToken, fetchSnapmintMerchantPlans(shop.merchantToken).catch(() => null));
-          }
-          const plan = await plansCache.get(shop.merchantToken);
-          if (plan) shop.merchantPlan = plan;
-        }
-
-        return shop;
-      })
-    );
+      return shop;
+    });
 
     const totalCount = parseInt(count || 0, 10);
     return res.status(200).json({

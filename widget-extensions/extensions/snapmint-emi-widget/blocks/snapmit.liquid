@@ -1,8 +1,8 @@
 <script>
+  window.snapmintWidget = {{ shop.metafields.snapmint_emi.widget.value | json }};
   window.snapmintWidgetPlans = {{ shop.metafields.snapmint_emi.merchant_plans.value | json }};
-  window.snapmintAutoSetupClass = {{ shop.metafields.snapmint_emi.auto_setup.value | json }};
-  window.snapmintWidgetLayout = {{ shop.metafields.snapmint_emi.widget_layout.value | json }};
-  window.snapmintInlineWidgetColor = {{ shop.metafields.snapmint_emi.inner_layout_colors.value | json }};
+  window.snapmintAutoSetupClass = {{ shop.metafields.snapmint_emi.widget.value.targeting | json }};
+  window.snapmintWidgetLayout = {{ shop.metafields.snapmint_emi.widget.value | json }};
   window.snapmintMoneyFormat = '{{ shop.money_format | strip_html }}';
 </script>
 {% if product != blank %}

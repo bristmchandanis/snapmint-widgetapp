@@ -1,6 +1,7 @@
 import React from 'react';
 import { ChevronDown } from 'lucide-react';
-import { CloseIcon, ClockIcon, ChevronRightIcon, PopupFooter, EligibilityFooter, formatRupee } from './PopupIcons';
+import { CloseIcon, ClockIcon, ChevronRightIcon, formatRupee } from '../shared/PopupIcons';
+import { ModalFooter, ModalFeatures } from '../shared/PopupFooter';
 import TotalOrderValueCard, { calculateOrderDiscount } from './TotalOrderValueCard';
 
 export default function PiePopup({
@@ -242,22 +243,7 @@ export default function PiePopup({
       </div>
 
       {/* Features Grid */}
-      <div className="snp-features-grid" data-snp-el="features">
-        <div className="snp-feature-item" data-snp-el="feature-1">
-          <span className="snp-feature-line">0% Interest</span>
-          <span className="snp-feature-line">Installments</span>
-        </div>
-        <div className="snp-feature-divider"></div>
-        <div className="snp-feature-item" data-snp-el="feature-2">
-          <span className="snp-feature-line">0 Extra</span>
-          <span className="snp-feature-line">Cost</span>
-        </div>
-        <div className="snp-feature-divider"></div>
-        <div className="snp-feature-item" data-snp-el="feature-3">
-          <span className="snp-feature-line">UPI + Cards</span>
-          <span className="snp-feature-line">Accepted</span>
-        </div>
-      </div>
+      <ModalFeatures />
 
       {/* Offer Disclaimer */}
       {showOfferNote && (
@@ -484,15 +470,7 @@ export default function PiePopup({
       )}
 
       {/* Footer Area according to popupType */}
-      {popupType === 'eligibility-payment' || popupType === 'eligibility-emi' ? (
-        <EligibilityFooter
-          popupType={popupType}
-          merchantName={merchantName}
-          rbi={rbi}
-        />
-      ) : (
-        <PopupFooter rbi={rbi} />
-      )}
+      <ModalFooter popupType={popupType} merchantName={merchantName} rbi={rbi} />
     </div>
   );
 }

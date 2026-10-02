@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, X, Info } from 'lucide-react';
-import { RosettePercentBadge } from './PopupIcons';
+import { RosettePercentBadge } from '../shared/PopupIcons';
 import { calculateOrderDiscount } from './TotalOrderValueCard';
 
 const DEFAULT_COUPONS = [
@@ -135,9 +135,8 @@ export default function CouponListPopup({
           return (
             <div
               key={`${coupon.code}-${idx}`}
-              className={`p-3.5 rounded-xl border transition-all ${
-                isApplied ? 'border-orange-300 bg-orange-50/20 shadow-2xs' : 'border-[#CBD5E1] bg-white hover:border-gray-400'
-              }`}
+              className={`p-3.5 rounded-xl border transition-all ${isApplied ? 'border-orange-300 bg-orange-50/20 shadow-2xs' : 'border-[#CBD5E1] bg-white hover:border-gray-400'
+                }`}
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="space-y-1">

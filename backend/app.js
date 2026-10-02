@@ -7,7 +7,6 @@ const webhookRoutes = require("./modules/webhook");
 require("./modules/appstation/model");
 require("./modules/merchantCredential/model");
 require("./modules/widgetCustomization/model");
-require("./modules/autoSetup/model");
 require("./modules/activityLog/model");
 require("./modules/cashbackOffer/model");
 require("./modules/coupon/model");
@@ -32,8 +31,9 @@ app.use("/api", routes);
 app.use("/api/webhooks", webhookRoutes);
 sequelize
   .authenticate()
-  .then(() => {
+  .then(async () => {
     console.log("PostgreSQL connection established successfully.");
+    await sequelize.query("DROP TABLE IF EXISTS auto_setups CASCADE;").catch(() => {});
     return sequelize.sync();
   })
   .then(() => {

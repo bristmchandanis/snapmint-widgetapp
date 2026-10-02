@@ -1,10 +1,12 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
-import { ArrowRight, ArrowLeft, Crosshair, X } from 'lucide-react';
+import { ArrowRight, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { PiePopup, MultiLayerPopup, BoxPopup, FixedDepositPopup } from './popup/PopupModal';
 import CouponListPopup from './popup/CouponListPopup';
 import './popup/PopupModal.css';
+import CustomizationHeader, { PLACEMENT_TABS } from './customization/CustomizationHeader';
+import ElementInspector from './customization/ElementInspector';
 import AssetsSection from './customization/AssetsSection';
 import ThemeSection from './customization/ThemeSection';
 import ColoursSection from './customization/ColoursSection';
@@ -14,169 +16,28 @@ import CashbackSection from './customization/CashbackSection';
 import OffersSection from './customization/OffersSection';
 import CouponsSection from './customization/CouponsSection';
 import RbiSection from './customization/RbiSection';
-import { extractColorsFromImage, extractColorsFromText } from './customization/colorExtraction';
-
-const THEME_PALETTES = {
-  orange: {
-    id: 'orange', name: 'Orange',
-    brandAccent: '#FF6F00', payNowTagFill: '#FF6F00', payNowTagText: '#FFFFFF',
-    mainText: '#151E29', popupBg: '#FFFFFF', bottomBg: '#F1F5F9', bottomText: '#151E29',
-    fieldBg: '#FFFFFF', enteredText: '#151E29', fieldPlaceholder: '#334255', fieldBorder: '#CBD5E1',
-    buttonFill: '#FF6F00', buttonText: '#FFFFFF', secondaryText: '#334255',
-    planBg: '#F1F5F9', uspText: '#151E29', paymentCards: '#FFFFFF',
-    selectedCard: '#FFF5EA', selectedOutline: '#FF6F00',
-  },
-  neutral: {
-    id: 'neutral', name: 'Neutral',
-    brandAccent: '#64768B', payNowTagFill: '#334255', payNowTagText: '#FFFFFF',
-    mainText: '#151E29', popupBg: '#FFFFFF', bottomBg: '#F1F5F9', bottomText: '#151E29',
-    fieldBg: '#FFFFFF', enteredText: '#151E29', fieldPlaceholder: '#334255', fieldBorder: '#CBD5E1',
-    buttonFill: '#334255', buttonText: '#FFFFFF', secondaryText: '#334255',
-    planBg: '#F1F5F9', uspText: '#151E29', paymentCards: '#FFFFFF',
-    selectedCard: '#F8FAFC', selectedOutline: '#64768B',
-  },
-  darkMode: {
-    id: 'darkMode', name: 'Dark Mode',
-    brandAccent: '#FF6F00', payNowTagFill: '#FF6F00', payNowTagText: '#FFFFFF',
-    mainText: '#F8FAFC', popupBg: '#151E29', bottomBg: '#1E2B3B', bottomText: '#F8FAFC',
-    fieldBg: '#151E29', enteredText: '#F8FAFC', fieldPlaceholder: '#F1F5F9', fieldBorder: '#64768B',
-    buttonFill: '#FF6F00', buttonText: '#FFFFFF', secondaryText: '#F1F5F9',
-    planBg: '#1E2B3B', uspText: '#F8FAFC', paymentCards: '#151E29',
-    selectedCard: '#151E29', selectedOutline: '#FF6F00',
-  },
-};
-
-const PLACEMENT_TABS = [
-  { id: 'pdp', label: 'PDP' },
-  { id: 'mini-cart', label: 'Mini cart' },
-  { id: 'cart', label: 'Cart' },
-  { id: 'checkout', label: 'Checkout' },
-];
-
-const DEFAULT_BRAND_COLORS = [
-  '#FFFFFF', '#FF6F01', '#BCBFC3', '#8A8F95', '#FEC091', '#F2D4BE', '#FE9645', '#62686F'
-];
-
-const DEFAULT_LOGO_COLORS = [
-  '#0A1225', '#06444D', '#A71346', '#8F8F1A', '#314277', '#5D6015', '#165F1D', '#491946'
-];
-
-const DEFAULT_CUSTOM_TEXT = {
-  topTitle: 'Pay only',
-  amountTitle: '{amount} Now',
-  sizeSheetTitle: 'Choose Size for {merchant} EMI Purchase',
-};
-
-const DEFAULT_CORNER_RADII = {
-  popup: '16 px',
-  container: '16 px',
-  button: '6 px',
-};
-
-const DEFAULT_CASHBACK = {
-  enabled: true,
-  ribbonFill: '#D1F4FC',
-  ribbonText: '#151E29',
-};
-
-const DEFAULT_OFFERS = {
-  enabled: true,
-  offerRibbon: true,
-  offerRibbonFill: '#FF6F00',
-  offerRibbonText: '#FFFFFF',
-  offerText: true,
-  offerTextColour: '#F8FAFC',
-  limitedTimeDealTag: true,
-  dealTagFill: '#FFF5EA',
-  dealTagText: '#CC4F02',
-  dealTagIcon: '#CC4F02',
-  offerNote: true,
-  offerNoteColour: '#64768B',
-  offerNoteText: 'Offer will change for order value greater than ₹3000',
-};
-
-const DEFAULT_COUPONS = {
-  enabled: true,
-  couponStripFill: '#FDF2F7',
-  couponStripText: '#151E29',
-  couponIconColour: '#BE185D',
-  listButtonColour: '#FF6F00',
-  listButtonTextColour: '#FFFFFF',
-  listNavIcons: '#64768B',
-};
-
-const DEFAULT_RBI = {
-  enabled: true,
-  iconsColour: '#FF6F00',
-  textColour: '#64768B',
-};
+import { extractColorsFromImage, extractColorsFromText } from './shared/helpers.jsx';
+import {
+  buildLivePreviewStyles,
+  THEME_PALETTES,
+  DEFAULT_BRAND_COLORS,
+  DEFAULT_LOGO_COLORS,
+  DEFAULT_CUSTOM_TEXT,
+  DEFAULT_CORNER_RADII,
+  DEFAULT_CASHBACK,
+  DEFAULT_OFFERS,
+  DEFAULT_COUPONS,
+  DEFAULT_RBI,
+  DEFAULT_SNAPSHOT,
+  ELEMENT_MAP,
+  COLOR_KEY_TO_CSS_VAR,
+} from './shared/constants.jsx';
 
 const POPUP_MAP = {
   'multi-plan': MultiLayerPopup,
   'pie': PiePopup,
   'box': BoxPopup,
   'fixed-dp': FixedDepositPopup,
-};
-
-// Granular element inspector map: data-snp-el value → { label, fields: [{ key (color state key), label }] }
-const ELEMENT_MAP = {
-  // Modal background
-  'popup-bg':           { label: 'Pop-up background',        fields: [{ key: 'popupBg', label: 'Background' }] },
-
-  // Header & Title items
-  'header':             { label: 'Header section',            fields: [{ key: 'mainText', label: 'Text colour' }, { key: 'popupBg', label: 'Background' }] },
-  'subtitle':           { label: 'Top subtitle ("Pay only")', fields: [{ key: 'mainText', label: 'Text colour' }] },
-  'amount-highlight':   { label: 'Highlight amount',         fields: [{ key: 'brandAccent', label: 'Accent colour' }] },
-  'rest-subtitle':      { label: 'Subtitle ("rest later in")', fields: [{ key: 'mainText', label: 'Text colour' }] },
-  'deal-badge':         { label: 'Limited time deal badge',   fields: [{ key: 'dealTagFill', label: 'Background' }, { key: 'dealTagText', label: 'Text colour' }, { key: 'dealTagIcon', label: 'Icon colour' }] },
-  'offer-banner':       { label: 'Offer banner ("Extra 5% Off")', fields: [{ key: 'brandAccent', label: 'Accent colour' }, { key: 'mainText', label: 'Text colour' }] },
-  'corner-ribbon':      { label: 'Cashback corner ribbon',    fields: [{ key: 'ribbonFill', label: 'Ribbon fill' }, { key: 'ribbonText', label: 'Ribbon text' }] },
-  'close-btn':          { label: 'Close button',              fields: [{ key: 'mainText', label: 'Icon colour' }] },
-
-  // Plan section & Cards
-  'inner-box':          { label: 'Plan container',           fields: [{ key: 'planBg', label: 'Background' }] },
-  'card-active':        { label: 'Payment card 1 (Active)',  fields: [{ key: 'selectedCard', label: 'Card fill' }, { key: 'mainText', label: 'Text colour' }, { key: 'selectedOutline', label: 'Outline' }, { key: 'brandAccent', label: 'Accent' }] },
-  'pie-1':              { label: 'Pie chart 1 (Active)',      fields: [{ key: 'brandAccent', label: 'Slice colour' }] },
-  'card-price-1':       { label: 'Card 1 price',              fields: [{ key: 'mainText', label: 'Price colour' }] },
-  'card-label-1':       { label: 'Card 1 label ("Today")',   fields: [{ key: 'secondaryText', label: 'Label colour' }] },
-  'pay-now-badge':      { label: 'Pay Now badge',             fields: [{ key: 'payNowTagFill', label: 'Badge fill' }, { key: 'payNowTagText', label: 'Badge text' }] },
-
-  'card-2':             { label: 'Payment card 2',            fields: [{ key: 'paymentCards', label: 'Background' }, { key: 'mainText', label: 'Text colour' }, { key: 'secondaryText', label: 'Secondary text' }] },
-  'pie-2':              { label: 'Pie chart 2',               fields: [{ key: 'mainText', label: 'Slice colour' }] },
-  'card-price-2':       { label: 'Card 2 price',              fields: [{ key: 'mainText', label: 'Price colour' }] },
-  'card-label-2':       { label: 'Card 2 label ("3rd May")',  fields: [{ key: 'secondaryText', label: 'Label colour' }] },
-
-  'card-3':             { label: 'Payment card 3',            fields: [{ key: 'paymentCards', label: 'Background' }, { key: 'mainText', label: 'Text colour' }, { key: 'secondaryText', label: 'Secondary text' }] },
-  'pie-3':              { label: 'Pie chart 3',               fields: [{ key: 'mainText', label: 'Slice colour' }] },
-  'card-price-3':       { label: 'Card 3 price',              fields: [{ key: 'mainText', label: 'Price colour' }] },
-  'card-label-3':       { label: 'Card 3 label ("3rd Jun")',  fields: [{ key: 'secondaryText', label: 'Label colour' }] },
-
-  // Total order value
-  'total-card':         { label: 'Total order value card',    fields: [{ key: 'mainText', label: 'Text colour' }] },
-  'total-row':          { label: 'Total order value row',     fields: [{ key: 'mainText', label: 'Text colour' }] },
-  'total-label':        { label: 'Label ("Total Order Value")', fields: [{ key: 'mainText', label: 'Text colour' }] },
-  'total-price':        { label: 'Total amount text',         fields: [{ key: 'mainText', label: 'Text colour' }] },
-  'coupon-strip':       { label: 'Coupon & Offers strip',     fields: [{ key: 'couponStripFill', label: 'Strip fill' }, { key: 'couponStripText', label: 'Text colour' }, { key: 'couponIconColour', label: 'Icon colour' }] },
-
-  // Features bar & individual items
-  'features':           { label: 'Features bar',              fields: [{ key: 'uspText', label: 'Text colour' }] },
-  'feature-1':          { label: 'Feature 1 ("0% Interest")', fields: [{ key: 'uspText', label: 'Text colour' }] },
-  'feature-2':          { label: 'Feature 2 ("0 Extra Cost")', fields: [{ key: 'uspText', label: 'Text colour' }] },
-  'feature-3':          { label: 'Feature 3 ("UPI + Cards")', fields: [{ key: 'uspText', label: 'Text colour' }] },
-
-  // Offer disclaimer note
-  'offer-note':         { label: 'Offer disclaimer note',     fields: [{ key: 'offerNoteColour', label: 'Note text colour' }] },
-
-  // Footer & Trust badges
-  'footer':             { label: 'Footer section',            fields: [{ key: 'secondaryText', label: 'Text colour' }] },
-  'pay-with-brand':     { label: 'Brand row ("Pay with Snapmint")', fields: [{ key: 'mainText', label: 'Text colour' }] },
-  'trust-bar':          { label: 'Trust badges row',          fields: [{ key: 'rbiIcons', label: 'Icon colour' }, { key: 'rbiText', label: 'Text colour' }] },
-  'rbi-badge':          { label: 'RBI regulated badge',       fields: [{ key: 'rbiIcons', label: 'Icon colour' }, { key: 'rbiText', label: 'Text colour' }] },
-  'trusted-badge':      { label: 'Trusted users badge',       fields: [{ key: 'rbiIcons', label: 'Icon colour' }, { key: 'rbiText', label: 'Text colour' }] },
-  'eligibility-footer': { label: 'Eligibility section',       fields: [{ key: 'brandAccent', label: 'Accent colour' }] },
-
-  // Express checkout
-  'express-bottom':     { label: 'Express checkout bar',      fields: [{ key: 'bottomBg', label: 'Background' }, { key: 'bottomText', label: 'Text colour' }, { key: 'buttonFill', label: 'Button fill' }, { key: 'buttonText', label: 'Button text' }] },
 };
 
 export default function Customization({
@@ -210,19 +71,165 @@ export default function Customization({
     }
   }, [firstEnabledPlacement, activePlacement, isPlacementEnabled]);
 
-  const selectedPlanPreview = useMemo(() => {
+  // Derive applicable styles based on priceBands configuration or merchant plans
+  const applicableStyles = useMemo(() => {
+    const styleSet = new Set();
+
+    // 1. From priceBands.bands groups
+    if (Array.isArray(priceBands?.bands)) {
+      priceBands.bands.forEach((b) => {
+        (b.groups || []).forEach((g) => {
+          (g.allowed || []).forEach((s) => {
+            if (s) styleSet.add(s);
+          });
+        });
+      });
+    }
+
+    // 2. From priceBands.choices if any
+    if (priceBands?.choices && typeof priceBands.choices === 'object') {
+      Object.values(priceBands.choices).forEach((s) => {
+        if (s) {
+          const str = String(s).toLowerCase();
+          if (str.includes('box')) styleSet.add('box');
+          else if (str.includes('fixed')) styleSet.add('fixed-dp');
+          else if (str.includes('pie')) styleSet.add('pie');
+        }
+      });
+    }
+
+    // 3. From plans if styleSet is still empty
+    if (styleSet.size === 0 && Array.isArray(plans) && plans.length > 0) {
+      plans.forEach((p) => {
+        if (p.dpType === 'fixed') {
+          styleSet.add('fixed-dp');
+        } else {
+          const t = Number(p.tenure);
+          if ([2, 3, 4, 6].includes(t)) {
+            styleSet.add('pie');
+            styleSet.add('box');
+          } else if ([12, 18, 24].includes(t)) {
+            styleSet.add('box');
+          } else {
+            styleSet.add('pie');
+            styleSet.add('box');
+          }
+        }
+      });
+    }
+
+    // Fallback only if no styles were derived
+    if (styleSet.size === 0) {
+      styleSet.add('pie');
+      styleSet.add('box');
+    }
+
+    const STYLE_LABELS = {
+      pie: 'Pie',
+      box: 'Box',
+      'fixed-dp': 'Fixed DP',
+    };
+
+    return Array.from(styleSet)
+      .filter((s) => s !== 'multi-plan')
+      .map((id) => ({
+        id,
+        label: STYLE_LABELS[id] || (id.charAt(0).toUpperCase() + id.slice(1)),
+      }));
+  }, [priceBands, plans]);
+
+  const [activePopupStyle, setActivePopupStyle] = useState(() => {
     if (priceBands?.choices && typeof priceBands.choices === 'object') {
       const first = Object.values(priceBands.choices)[0];
       if (first) {
         const s = String(first).toLowerCase();
+        if (s.includes('pie')) return 'pie';
         if (s.includes('box')) return 'box';
         if (s.includes('fixed')) return 'fixed-dp';
-        if (s.includes('multi')) return 'multi-plan';
-        if (s.includes('pie')) return 'pie';
       }
     }
     return 'pie';
-  }, [priceBands]);
+  });
+
+  // Keep activePopupStyle synchronized with priceBands.choices
+  useEffect(() => {
+    if (priceBands?.choices && typeof priceBands.choices === 'object') {
+      const first = Object.values(priceBands.choices)[0];
+      if (first) {
+        const s = String(first).toLowerCase();
+        const matched = s.includes('pie') ? 'pie' : s.includes('box') ? 'box' : s.includes('fixed') ? 'fixed-dp' : null;
+        if (matched) setActivePopupStyle(matched);
+      }
+    }
+  }, [priceBands?.choices]);
+
+  const hasMultiPlan = useMemo(() => {
+    return (
+      (priceBands?.bands || []).some((b) => (b.groups || []).some((g) => (g.plans || []).length > 1)) ||
+      (Array.isArray(plans) && plans.length > 1)
+    );
+  }, [priceBands, plans]);
+
+  const availableFutureRepayments = useMemo(() => {
+    const tenureSet = new Set();
+
+    // 1. From priceBands.bands
+    if (Array.isArray(priceBands?.bands)) {
+      priceBands.bands.forEach((b) => {
+        (b.groups || []).forEach((g) => {
+          (g.plans || []).forEach((p) => {
+            if (p.tenure) tenureSet.add(Number(p.tenure));
+          });
+        });
+      });
+    }
+
+    // 2. From plans prop
+    if (tenureSet.size === 0 && Array.isArray(plans)) {
+      plans.forEach((p) => {
+        if (p.tenure) tenureSet.add(Number(p.tenure));
+      });
+    }
+
+    const baseTenures = tenureSet.size > 0 ? Array.from(tenureSet) : [3];
+    return baseTenures
+      .sort((a, b) => a - b)
+      .map((t) => {
+        const futureMonths = Math.max(1, t - 1);
+        return {
+          value: String(futureMonths),
+          label: `${futureMonths} ${futureMonths === 1 ? 'month' : 'months'}`,
+          tenure: t,
+        };
+      });
+  }, [priceBands, plans]);
+
+  const [selectedPlanPreviewMode, setSelectedPlanPreviewMode] = useState('single');
+  const [selectedFutureRepayments, setSelectedFutureRepayments] = useState(() => {
+    return availableFutureRepayments[0]?.value || '2';
+  });
+
+  // Keep future repayments in sync if availableFutureRepayments updates
+  useEffect(() => {
+    if (
+      availableFutureRepayments.length > 0 &&
+      !availableFutureRepayments.some((opt) => opt.value === selectedFutureRepayments)
+    ) {
+      setSelectedFutureRepayments(availableFutureRepayments[0].value);
+    }
+  }, [availableFutureRepayments, selectedFutureRepayments]);
+
+  // Synchronize activePopupStyle if the available styles change
+  useEffect(() => {
+    if (applicableStyles.length > 0 && !applicableStyles.some((s) => s.id === activePopupStyle)) {
+      setActivePopupStyle(applicableStyles[0].id);
+    }
+  }, [applicableStyles, activePopupStyle]);
+
+  const selectedPlanPreview = useMemo(() => {
+    if (selectedPlanPreviewMode === 'multi') return 'multi-plan';
+    return activePopupStyle;
+  }, [selectedPlanPreviewMode, activePopupStyle]);
 
   const [isWhiteLabel, setIsWhiteLabel] = useState(brandingMode === 'WHITE_LABEL');
   const [selectedTheme, setSelectedTheme] = useState('orange');
@@ -237,6 +244,7 @@ export default function Customization({
   const [titleFont, setTitleFont] = useState(() => initialCustomization?.titleFont || null);
   const [bodyFont, setBodyFont] = useState(() => initialCustomization?.bodyFont || null);
   const [uploadedFonts, setUploadedFonts] = useState(() => initialCustomization?.uploadedFonts || []);
+  const [fontFamilyMap, setFontFamilyMap] = useState({});
   const [isEditingTypography, setIsEditingTypography] = useState(false);
   const [activePickerField, setActivePickerField] = useState(null);
 
@@ -308,35 +316,7 @@ export default function Customization({
   const [elementOverrides, setElementOverrides] = useState({}); // { [snpElId]: { [colorKey]: hex } }
   const previewContainerRef = useRef(null);
 
-  // Map color keys → CSS variable names for per-element inline overrides
-  const COLOR_KEY_TO_CSS_VAR = useMemo(() => ({
-    popupBg: ['--snp-color-modal-bg'],
-    mainText: ['--snp-color-text-primary'],
-    brandAccent: ['--snp-color-primary'],
-    planBg: ['--snp-color-inner-bg'],
-    selectedCard: ['--snp-color-card-active', '--snp-color-primary-bg'],
-    selectedOutline: ['--snp-color-card-outline'],
-    paymentCards: ['--snp-color-card-bg'],
-    secondaryText: ['--snp-color-text-secondary', '--snp-color-text-muted'],
-    uspText: ['--snp-color-text-feature', '--snp-color-usp-text'],
-    bottomBg: ['--snp-color-bottom-bg'],
-    bottomText: ['--snp-color-bottom-text', '--snp-color-entered-text'],
-    buttonFill: ['--snp-color-button-fill'],
-    buttonText: ['--snp-color-button-text'],
-    payNowTagFill: ['--snp-color-pay-now', '--snp-color-button-fill'],
-    payNowTagText: ['--snp-color-pay-now-text', '--snp-color-button-text'],
-    dealTagFill: ['--snp-color-deal-bg'],
-    dealTagText: ['--snp-color-deal-text'],
-    dealTagIcon: ['--snp-color-deal-icon'],
-    offerNoteColour: ['--snp-color-offer-note-custom', '--snp-color-offer-note'],
-    rbiIcons: ['--snp-color-rbi-icons'],
-    rbiText: ['--snp-color-rbi-text'],
-    ribbonFill: ['--snp-color-cashback-ribbon-bg'],
-    ribbonText: ['--snp-color-cashback-ribbon-text'],
-    couponStripFill: ['--snp-color-coupon-strip-fill'],
-    couponStripText: ['--snp-color-coupon-strip-text'],
-    couponIconColour: ['--snp-color-coupon-icon'],
-  }), []);
+
 
   // Apply per-element overrides as inline CSS vars on the actual DOM nodes
   useEffect(() => {
@@ -554,22 +534,7 @@ export default function Customization({
 
   const handleResetEverything = useCallback(() => {
     setLastStateBeforeReset(getCurrentSnapshot());
-    applySnapshot({
-      selectedTheme: 'orange',
-      colors: { ...THEME_PALETTES.orange },
-      brandColors: [...DEFAULT_BRAND_COLORS],
-      logoColors: [...DEFAULT_LOGO_COLORS],
-      brandLogo: null,
-      titleFont: null,
-      bodyFont: null,
-      uploadedFonts: [],
-      customText: { ...DEFAULT_CUSTOM_TEXT },
-      cornerRadii: { ...DEFAULT_CORNER_RADII },
-      cashback: { ...DEFAULT_CASHBACK },
-      offers: { ...DEFAULT_OFFERS },
-      coupons: { ...DEFAULT_COUPONS },
-      rbi: { ...DEFAULT_RBI },
-    });
+    applySnapshot(DEFAULT_SNAPSHOT);
     setActivePickerField(null);
     toast.success('Reset all customization settings');
   }, [getCurrentSnapshot, applySnapshot]);
@@ -646,13 +611,35 @@ export default function Customization({
     setLogoColors([]);
   }, []);
 
-  const handleUploadFont = useCallback((type, e) => {
+  const handleUploadFont = useCallback(async (type, e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    const familyName = file.name.replace(/\.[^/.]+$/, '').replace(/[^a-zA-Z0-9_-]/g, '_');
+    const fontUrl = URL.createObjectURL(file);
+
+    try {
+      const fontFace = new FontFace(familyName, `url("${fontUrl}")`);
+      const loaded = await fontFace.load();
+      document.fonts.add(loaded);
+    } catch (err) {
+      console.warn('FontFace load error:', err);
+    }
+
+    let styleTag = document.getElementById(`snp-font-${familyName}`);
+    if (!styleTag) {
+      styleTag = document.createElement('style');
+      styleTag.id = `snp-font-${familyName}`;
+      styleTag.textContent = `@font-face { font-family: "${familyName}"; src: url("${fontUrl}"); font-display: swap; }`;
+      document.head.appendChild(styleTag);
+    }
+
+    setFontFamilyMap((prev) => ({ ...prev, [file.name]: familyName }));
     setUploadedFonts((prev) => {
       const list = Array.isArray(prev) ? prev : [];
       return list.includes(file.name) ? list : [...list, file.name];
     });
+
     if (type === 'title') {
       setTitleFont(file.name);
       toast.success(`Uploaded heading font: ${file.name}`);
@@ -662,6 +649,44 @@ export default function Customization({
     }
     e.target.value = '';
   }, []);
+
+  useEffect(() => {
+    [titleFont, bodyFont].filter(Boolean).forEach((f) => {
+      const clean = f.split(/[-_.]/)[0];
+      const common = ['Roboto', 'Inter', 'Poppins', 'Montserrat', 'Lato', 'OpenSans', 'Open Sans', 'Oswald', 'Raleway', 'Nunito', 'Ubuntu', 'Rubik'];
+      const matched = common.find((g) => clean.toLowerCase() === g.toLowerCase().replace(/\s+/g, ''));
+      if (matched) {
+        const id = `snp-gf-${matched}`;
+        if (!document.getElementById(id)) {
+          const link = document.createElement('link');
+          link.id = id;
+          link.rel = 'stylesheet';
+          link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(matched)}:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,700&display=swap`;
+          document.head.appendChild(link);
+        }
+      }
+    });
+  }, [titleFont, bodyFont]);
+
+  const activeTitleFontFamily = useMemo(() => {
+    if (!titleFont) return null;
+    if (fontFamilyMap[titleFont]) return fontFamilyMap[titleFont];
+    const clean = titleFont.split(/[-_.]/)[0];
+    const common = ['Roboto', 'Inter', 'Poppins', 'Montserrat', 'Lato', 'OpenSans', 'Open Sans', 'Oswald', 'Raleway', 'Nunito', 'Ubuntu', 'Rubik'];
+    const matched = common.find((g) => clean.toLowerCase() === g.toLowerCase().replace(/\s+/g, ''));
+    if (matched) return matched;
+    return titleFont.replace(/\.[^/.]+$/, '').replace(/[^a-zA-Z0-9_-]/g, '_');
+  }, [titleFont, fontFamilyMap]);
+
+  const activeBodyFontFamily = useMemo(() => {
+    if (!bodyFont) return null;
+    if (fontFamilyMap[bodyFont]) return fontFamilyMap[bodyFont];
+    const clean = bodyFont.split(/[-_.]/)[0];
+    const common = ['Roboto', 'Inter', 'Poppins', 'Montserrat', 'Lato', 'OpenSans', 'Open Sans', 'Oswald', 'Raleway', 'Nunito', 'Ubuntu', 'Rubik'];
+    const matched = common.find((g) => clean.toLowerCase() === g.toLowerCase().replace(/\s+/g, ''));
+    if (matched) return matched;
+    return bodyFont.replace(/\.[^/.]+$/, '').replace(/[^a-zA-Z0-9_-]/g, '_');
+  }, [bodyFont, fontFamilyMap]);
 
   const handleSave = () => {
     toast.success('Pop-up appearance saved');
@@ -690,95 +715,40 @@ export default function Customization({
   const currentPopupType = safeConfig[activePlacement]?.popupType || (activePlacement === 'cart' ? 'eligibility-payment' : (activePlacement === 'mini-cart' || activePlacement === 'checkout') ? 'express' : 'info');
   const isExpressPlacement = currentPopupType === 'express';
 
-  const livePreviewStyles = useMemo(() => ({
-    '--snp-color-primary': colors.brandAccent,
-    '--snp-color-pay-now': colors.payNowTagFill,
-    '--snp-color-pay-now-text': colors.payNowTagText,
-    '--snp-color-text-primary': colors.mainText,
-    '--snp-color-text-secondary': colors.secondaryText,
-    '--snp-color-text-muted': colors.secondaryText,
-    '--snp-color-text-feature': colors.uspText,
-    '--snp-color-modal-bg': colors.popupBg,
-    '--snp-color-inner-bg': colors.planBg,
-    '--snp-color-card-bg': colors.paymentCards,
-    '--snp-color-card-active': colors.selectedCard,
-    '--snp-color-card-outline': colors.selectedOutline,
-    '--snp-color-primary-bg': colors.selectedCard,
-    '--snp-color-pill-bg': colors.paymentCards,
-    '--snp-color-extra-off-bg': colors.brandAccent,
-    '--snp-color-extra-off-text': colors.payNowTagText,
-    '--snp-color-usp-text': colors.uspText,
-    '--snp-color-offer-note': colors.secondaryText,
-    '--snp-color-footer-bg': colors.bottomBg || colors.planBg,
-    '--snp-color-bottom-bg': colors.bottomBg,
-    '--snp-color-bottom-text': colors.bottomText,
-    '--snp-color-field-bg': colors.fieldBg,
-    '--snp-color-entered-text': colors.enteredText || colors.bottomText || '#151E29',
-    '--snp-color-field-placeholder': colors.fieldPlaceholder,
-    '--snp-color-field-border': colors.fieldBorder,
-    '--snp-color-button-fill': colors.buttonFill,
-    '--snp-color-button-text': colors.buttonText,
-    '--snp-radius-modal': (cornerRadii.popup || '16px').replace(/\s+/g, ''),
-    '--snp-radius-container': (cornerRadii.container || '16px').replace(/\s+/g, ''),
-    '--snp-radius-button': (cornerRadii.button || '6px').replace(/\s+/g, ''),
-    '--snp-color-cashback-ribbon-bg': cashback.ribbonFill || '#F1F5F9',
-    '--snp-color-cashback-ribbon-text': cashback.ribbonText || '#151E29',
-    '--snp-color-offer-ribbon-fill': offers.offerRibbonFill,
-    '--snp-color-offer-ribbon-text': offers.offerRibbonText,
-    '--snp-color-offer-text': offers.offerTextColour,
-    '--snp-color-deal-bg': offers.dealTagFill,
-    '--snp-color-deal-text': offers.dealTagText,
-    '--snp-color-deal-icon': offers.dealTagIcon,
-    '--snp-color-offer-note-custom': offers.offerNoteColour,
-    '--snp-rbi-display': rbi?.enabled !== false ? 'flex' : 'none',
-    '--snp-color-rbi-icons': rbi?.iconsColour || '#FF6F00',
-    '--snp-color-rbi-text': rbi?.textColour || '#64768B',
-    '--snp-color-coupon-strip-fill': coupons?.couponStripFill || '#FDF2F7',
-    '--snp-color-coupon-strip-text': coupons?.couponStripText || '#151E29',
-    '--snp-color-coupon-icon': coupons?.couponIconColour || '#BE185D',
-    '--snp-color-coupon-btn': coupons?.listButtonColour || '#FF6F00',
-    '--snp-color-coupon-btn-text': coupons?.listButtonTextColour || '#FFFFFF',
-    '--snp-color-coupon-nav-icons': coupons?.listNavIcons || '#64768B',
-  }), [colors, cornerRadii, cashback, offers, rbi, coupons]);
+  const livePreviewStyles = useMemo(() => buildLivePreviewStyles({
+    colors,
+    cornerRadii,
+    cashback,
+    offers,
+    rbi,
+    coupons,
+    titleFont: activeTitleFontFamily,
+    bodyFont: activeBodyFontFamily,
+  }), [colors, cornerRadii, cashback, offers, rbi, coupons, activeTitleFontFamily, activeBodyFontFamily]);
+
+  const popupTenure = selectedPlanPreview === 'box'
+    ? Number(selectedFutureRepayments)
+    : Number(selectedFutureRepayments) + 1;
 
   const ActivePopup = POPUP_MAP[selectedPlanPreview] || PiePopup;
 
   return (
     <div className="w-full min-h-[calc(100vh-140px)] flex flex-col bg-gray-50 rounded-md overflow-hidden border border-gray-200">
-      {/* Placement Tab Bar */}
-      <div className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-1.5 bg-gray-100/80 p-1 rounded-md">
-          {PLACEMENT_TABS.map((tab) => {
-            const isEnabled = isPlacementEnabled(tab.id);
-            const isActive = activePlacement === tab.id;
-
-            if (!isEnabled) {
-              return (
-                <button
-                  key={tab.id}
-                  type="button"
-                  disabled
-                  className="px-3.5 py-1.5 rounded-md text-xs font-semibold text-gray-300 cursor-not-allowed select-none bg-transparent"
-                >
-                  {tab.label}
-                </button>
-              );
-            }
-
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setActivePlacement(tab.id)}
-                className={`px-3.5 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer ${isActive ? 'bg-white text-gray-900 shadow-xs' : 'text-gray-600 hover:text-gray-900'
-                  }`}
-              >
-                {tab.label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
+      {/* Header Bar: Placement Tabs & Plan Preview Controls */}
+      <CustomizationHeader
+        activePlacement={activePlacement}
+        setActivePlacement={setActivePlacement}
+        isPlacementEnabled={isPlacementEnabled}
+        selectedPlanPreviewMode={selectedPlanPreviewMode}
+        setSelectedPlanPreviewMode={setSelectedPlanPreviewMode}
+        hasMultiPlan={hasMultiPlan}
+        selectedFutureRepayments={selectedFutureRepayments}
+        setSelectedFutureRepayments={setSelectedFutureRepayments}
+        availableFutureRepayments={availableFutureRepayments}
+        activePopupStyle={activePopupStyle}
+        setActivePopupStyle={setActivePopupStyle}
+        applicableStyles={applicableStyles}
+      />
 
       {/* Main Workspace: Preview Area + Sidebar */}
       <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
@@ -788,11 +758,10 @@ export default function Customization({
             <button
               type="button"
               onClick={() => { setIsSelectMode(m => !m); if (isSelectMode) setSelectedElement(null); }}
-              className={`backdrop-blur-sm border px-3 py-1.5 rounded-md text-xs font-medium shadow-xs flex items-center gap-1.5 cursor-pointer transition-all ${
-                isSelectMode
-                  ? 'bg-[#513487] text-white border-[#513487] hover:bg-[#432b71]'
-                  : 'bg-white/90 text-gray-700 border-gray-200 hover:bg-gray-50'
-              }`}
+              className={`backdrop-blur-sm border px-3 py-1.5 rounded-md text-xs font-medium shadow-xs flex items-center gap-1.5 cursor-pointer transition-all ${isSelectMode
+                ? 'bg-[#513487] text-white border-[#513487] hover:bg-[#432b71]'
+                : 'bg-white/90 text-gray-700 border-gray-200 hover:bg-gray-50'
+                }`}
             >
               <span>{isSelectMode ? 'Done selecting' : 'Select element'}</span>
             </button>
@@ -823,8 +792,8 @@ export default function Customization({
               <ActivePopup
                 merchantName={safeMerchant}
                 orderValue={15000}
-                downPaymentPercent={selectedPlanPreview === 'pie' ? 33 : 25}
-                tenure={3}
+                downPaymentPercent={selectedPlanPreview === 'pie' ? (100 / (Number(selectedFutureRepayments) + 1)) : 33.333333}
+                tenure={popupTenure}
                 fixedDp={1}
                 eligibleTenures={[3, 6]}
                 popupType={currentPopupType}
@@ -889,111 +858,22 @@ export default function Customization({
           </div>
 
           {/* Element Inspector Panel */}
-          {selectedElement && ELEMENT_MAP[selectedElement] && (() => {
-            const elDef = ELEMENT_MAP[selectedElement];
-            const overrides = elementOverrides[selectedElement] || {};
-            return (
-            <div className="p-4 border-b border-[#ebdff7] bg-[#fcfaff]">
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-sm font-bold text-gray-900">{elDef.label}</h3>
-                <button
-                  type="button"
-                  onClick={() => { setSelectedElement(null); setActivePickerField(null); }}
-                  className="text-xs text-gray-500 hover:text-[#513487] font-medium cursor-pointer"
-                >
-                  Done
-                </button>
-              </div>
-              <div className="flex items-center p-0.5 bg-[#f0ebf7] rounded-lg border border-[#e5dced] mb-2">
-                <button
-                  type="button"
-                  onClick={() => setEditorTab('this')}
-                  className={`flex-1 text-[11px] font-semibold py-1 rounded-md cursor-pointer transition-all ${
-                    editorTab === 'this'
-                      ? 'bg-white text-[#513487] shadow-xs'
-                      : 'text-gray-500 hover:text-gray-800'
-                  }`}
-                >
-                  This element
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setEditorTab('shared')}
-                  className={`flex-1 text-[11px] font-semibold py-1 rounded-md cursor-pointer transition-all ${
-                    editorTab === 'shared'
-                      ? 'bg-white text-[#513487] shadow-xs'
-                      : 'text-gray-500 hover:text-gray-800'
-                  }`}
-                >
-                  Shared style
-                </button>
-              </div>
-              <div className="flex items-center justify-between mb-3">
-                <p className="text-[11px] text-gray-500 italic">
-                  {editorTab === 'this' ? 'Only the selected element will change.' : 'Changes will apply to all elements sharing this style.'}
-                </p>
-                {editorTab === 'this' && Object.keys(overrides).length > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setElementOverrides(prev => {
-                        const next = { ...prev };
-                        delete next[selectedElement];
-                        return next;
-                      });
-                    }}
-                    className="text-[10px] text-[#513487] hover:text-red-600 font-semibold cursor-pointer underline shrink-0 ml-2"
-                  >
-                    Reset override
-                  </button>
-                )}
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {elDef.fields.map(({ key, label: fLabel }) => {
-                  const getBaseColor = (k) => {
-                    if (['dealTagFill', 'dealTagText', 'dealTagIcon', 'offerNoteColour'].includes(k)) return offers[k] || offers.dealTagFill;
-                    if (k === 'rbiIcons') return rbi?.iconsColour || '#FF6F00';
-                    if (k === 'rbiText') return rbi?.textColour || '#64768B';
-                    if (k === 'ribbonFill') return cashback?.ribbonFill || '#D1F4FC';
-                    if (k === 'ribbonText') return cashback?.ribbonText || '#151E29';
-                    if (k === 'couponStripFill') return coupons?.couponStripFill || '#FDF2F7';
-                    if (k === 'couponStripText') return coupons?.couponStripText || '#151E29';
-                    if (k === 'couponIconColour') return coupons?.couponIconColour || '#BE185D';
-                    return colors[k] || '#000000';
-                  };
-                  const resolvedColor = editorTab === 'this' ? (overrides[key] || getBaseColor(key)) : getBaseColor(key);
-                  return (
-                  <div key={key} className="relative">
-                    <button
-                      type="button"
-                      onClick={() => setActivePickerField(activePickerField === `el-${key}` ? null : `el-${key}`)}
-                      className={`flex items-center gap-1.5 border rounded-full px-2.5 py-1 bg-white text-[10.5px] font-medium cursor-pointer transition-all ${
-                        activePickerField === `el-${key}` ? 'border-indigo-500 ring-2 ring-indigo-200' : 'border-gray-200 hover:border-gray-400'
-                      }`}
-                    >
-                      <div className="w-4 h-4 rounded-full border border-black/10 shrink-0" style={{ backgroundColor: resolvedColor || '#000' }} />
-                      <span className="text-gray-700">{fLabel}</span>
-                    </button>
-                    {activePickerField === `el-${key}` && (
-                      <div className="absolute left-0 top-full mt-1 z-50 w-48 bg-white rounded-lg shadow-xl border border-gray-200 p-3">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-[10px] font-bold text-gray-600 uppercase">{fLabel}</span>
-                          <button type="button" onClick={() => setActivePickerField(null)} className="text-gray-400 hover:text-gray-600 cursor-pointer"><X className="w-3 h-3" /></button>
-                        </div>
-                        <input type="color" value={resolvedColor || '#000000'} onChange={(e) => handleElementColorChange(key, e.target.value.toUpperCase())} className="w-full h-14 rounded cursor-pointer border border-gray-200 p-0.5 bg-white mb-2" />
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-[10px] text-gray-400 font-medium">HEX</span>
-                          <input type="text" value={resolvedColor || ''} maxLength={7} onChange={(e) => handleElementColorChange(key, e.target.value.toUpperCase())} className="flex-1 px-2 py-1 border border-gray-200 rounded text-[10px] font-mono font-semibold text-gray-800 uppercase focus:outline-none focus:border-gray-400" />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                  );
-                })}
-              </div>
-            </div>
-            );
-          })()}
+          <ElementInspector
+            selectedElement={selectedElement}
+            onClose={() => { setSelectedElement(null); setActivePickerField(null); }}
+            editorTab={editorTab}
+            setEditorTab={setEditorTab}
+            elementOverrides={elementOverrides}
+            setElementOverrides={setElementOverrides}
+            activePickerField={activePickerField}
+            setActivePickerField={setActivePickerField}
+            handleElementColorChange={handleElementColorChange}
+            colors={colors}
+            offers={offers}
+            rbi={rbi}
+            cashback={cashback}
+            coupons={coupons}
+          />
 
           {/* Collapsible Customization Sections */}
           <div className="divide-y divide-gray-100 flex-1">

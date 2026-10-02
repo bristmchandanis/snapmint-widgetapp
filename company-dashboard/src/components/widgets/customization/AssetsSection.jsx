@@ -257,16 +257,13 @@ const AssetsSection = memo(function AssetsSection({
                               <div className="relative">
                                 <select
                                   value={currentVal || ''}
-                                  onChange={(e) => setVal(e.target.value)}
+                                  onChange={(e) => setVal(e.target.value || null)}
                                   className="w-full h-9 px-3 pr-8 border border-gray-200 rounded-md text-xs bg-white text-gray-800 appearance-none focus:outline-none focus:border-gray-400 cursor-pointer shadow-2xs"
                                 >
-                                  {fontOptions.length === 0 ? (
-                                    <option value="" disabled>No fonts uploaded yet</option>
-                                  ) : (
-                                    fontOptions.map((f) => (
-                                      <option key={f} value={f}>{f}</option>
-                                    ))
-                                  )}
+                                  <option value="">Default</option>
+                                  {fontOptions.map((f) => (
+                                    <option key={f} value={f}>{f}</option>
+                                  ))}
                                 </select>
                                 <ChevronDown className="w-4 h-4 text-gray-500 absolute right-2.5 top-2.5 pointer-events-none" />
                               </div>

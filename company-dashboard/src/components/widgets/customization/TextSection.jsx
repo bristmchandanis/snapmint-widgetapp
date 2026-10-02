@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import { ChevronUp, ChevronDown } from 'lucide-react';
+import FormField from '@/components/common/FormField';
 
 const TEXT_FIELDS = [
   {
@@ -61,21 +62,17 @@ const TextSection = memo(function TextSection({
       {isOpen && (
         <div className="space-y-3">
           {TEXT_FIELDS.map(({ key, label, placeholder, hint }) => (
-            <div key={key}>
-              <label className="block text-xs text-gray-500 mb-1.5">{label}</label>
-              <input
-                type="text"
-                value={customText[key] || ''}
-                onChange={(e) => handleChange(key, e.target.value)}
-                placeholder={placeholder}
-                className="w-full h-9 px-3 border border-gray-200 rounded-md text-xs bg-white text-gray-800 focus:outline-none focus:border-gray-400 shadow-2xs"
-              />
-              {hint && (
-                <div className="text-[11px] text-gray-400 mt-1 leading-snug">
-                  {hint}
-                </div>
-              )}
-            </div>
+            <FormField
+              key={key}
+              id={key}
+              name={key}
+              label={label}
+              placeholder={placeholder}
+              value={customText[key] || ''}
+              onChange={(e) => handleChange(key, e.target.value)}
+              hint={hint}
+              className="h-9 text-xs sm:text-xs"
+            />
           ))}
         </div>
       )}

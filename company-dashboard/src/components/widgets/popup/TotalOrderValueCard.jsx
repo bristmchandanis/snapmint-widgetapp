@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChevronRightIcon, formatRupee, RosettePercentBadge } from './PopupIcons';
+import { ChevronRightIcon, formatRupee, RosettePercentBadge } from '../shared/PopupIcons';
 
 // Single shared discount calculator for all popups
 export function calculateOrderDiscount(orderValue, appliedCoupon, fallback = 15000) {
