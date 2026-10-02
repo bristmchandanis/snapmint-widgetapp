@@ -40,6 +40,27 @@ const POPUP_MAP = {
   'fixed-dp': FixedDepositPopup,
 };
 
+export const BRANDING_OPTIONS = [
+  { id: 'snapmint', label: 'Snapmint' },
+  { id: 'co-branded', label: 'Co-branded' },
+  { id: 'white-label', label: 'White label' },
+];
+
+export const normalizeBrandingMode = (mode) => {
+  if (!mode) return 'snapmint';
+  const str = String(mode).toLowerCase().replace(/_/g, '-');
+  if (str.includes('white')) return 'white-label';
+  if (str.includes('co')) return 'co-branded';
+  if (str.includes('snap')) return 'snapmint';
+  return str;
+};
+
+export const formatBrandingLabel = (mode) => {
+  const norm = normalizeBrandingMode(mode);
+  const match = BRANDING_OPTIONS.find((b) => b.id === norm);
+  return match ? match.label : (mode ? (mode.charAt(0).toUpperCase() + mode.slice(1)) : 'Snapmint');
+};
+
 export default function Customization({
   merchantName = "Neeman's",
   brandingMode = 'WHITE_LABEL',
@@ -51,11 +72,18 @@ export default function Customization({
   onContinue,
 }) {
   const safeMerchant = String(merchantName || "Neeman's");
-  const safeConfig = configuration && typeof configuration === 'object' ? configuration : {};
+  const safeConfig = useMemo(() => {
+    const raw = configuration && typeof configuration === 'object' ? configuration : {};
+    return {
+      pdp: { enabled: true, ...(raw.pdp || {}) },
+      'mini-cart': { enabled: true, ...(raw['mini-cart'] || {}) },
+      cart: { enabled: true, ...(raw.cart || {}) },
+      checkout: { enabled: true, ...(raw.checkout || {}) },
+    };
+  }, [configuration]);
 
   const isPlacementEnabled = useCallback((tabId) => {
-    if (!safeConfig || Object.keys(safeConfig).length === 0) return true;
-    return safeConfig[tabId]?.enabled === true;
+    return safeConfig[tabId]?.enabled !== false;
   }, [safeConfig]);
 
   const firstEnabledPlacement = useMemo(() => {
@@ -231,7 +259,8 @@ export default function Customization({
     return activePopupStyle;
   }, [selectedPlanPreviewMode, activePopupStyle]);
 
-  const [isWhiteLabel, setIsWhiteLabel] = useState(brandingMode === 'WHITE_LABEL');
+  const currentBrandingMode = normalizeBrandingMode(brandingMode);
+  const isWhiteLabel = currentBrandingMode === 'white-label';
   const [selectedTheme, setSelectedTheme] = useState('orange');
   const [colors, setColors] = useState(() => ({
     ...THEME_PALETTES.orange,
@@ -432,6 +461,7 @@ export default function Customization({
     rbi: true,
   });
 
+  const [expressTab, setExpressTab] = useState('size');
   const [lastStateBeforeReset, setLastStateBeforeReset] = useState(null);
 
   const toggleSection = useCallback((sec) => {
@@ -689,12 +719,12 @@ export default function Customization({
   }, [bodyFont, fontFamilyMap]);
 
   const handleSave = () => {
-    toast.success('Pop-up appearance saved');
     if (onContinue) {
       onContinue({
         theme: selectedTheme,
         colors,
         isWhiteLabel,
+        brandingMode: currentBrandingMode,
         activePlacement,
         selectedPlanPreview,
         brandColors,
@@ -709,6 +739,8 @@ export default function Customization({
         coupons: { ...coupons, enabled: isCouponsEnabledInConfig },
         rbi,
       });
+    } else {
+      toast.success('Pop-up appearance saved');
     }
   };
 
@@ -798,6 +830,8 @@ export default function Customization({
                 eligibleTenures={[3, 6]}
                 popupType={currentPopupType}
                 showExpress={isExpressPlacement}
+                expressTab={expressTab}
+                onExpressTabChange={setExpressTab}
                 customText={customText}
                 cashback={cashback}
                 offers={offers}
@@ -825,14 +859,10 @@ export default function Customization({
                 <span className="text-xs font-bold text-gray-900 truncate max-w-[170px]">{safeMerchant}</span>
               </div>
 
-              <button
-                type="button"
-                onClick={() => setIsWhiteLabel((prev) => !prev)}
-                className={`text-[11px] font-semibold px-2.5 py-1 rounded-md cursor-pointer transition-colors ${isWhiteLabel ? 'bg-gray-100 text-gray-800 font-bold' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
-                  }`}
-              >
-                White label
-              </button>
+              {/* Branding Mode Badge (Displays selected branding mode from Step 1) */}
+              <span className="text-[11px] font-semibold px-2.5 py-1 rounded-md bg-gray-100 text-gray-800 border border-gray-200/60 shadow-2xs">
+                {formatBrandingLabel(brandingMode)}
+              </span>
             </div>
 
             <h2 className="text-base font-bold text-gray-900 tracking-tight">Pop-up appearance</h2>
@@ -935,6 +965,8 @@ export default function Customization({
               brandColors={brandColors}
               logoColors={logoColors}
               isExpressPlacement={isExpressPlacement}
+              expressTab={expressTab}
+              onExpressTabChange={setExpressTab}
             />
 
             {/* 4. Text */}

@@ -45,7 +45,7 @@ const ThemeSection = memo(function ThemeSection({
       <button
         type="button"
         onClick={onToggle}
-        className="w-full flex items-center justify-between font-bold text-xs text-gray-900 mb-3 cursor-pointer"
+        className="w-full flex items-center justify-between font-bold text-sm text-gray-900 mb-3 cursor-pointer"
       >
         <span>Pick a theme</span>
         {isOpen ? <ChevronUp className="w-4 h-4 text-gray-500" /> : <ChevronDown className="w-4 h-4 text-gray-500" />}
@@ -59,11 +59,10 @@ const ThemeSection = memo(function ThemeSection({
               <div
                 key={theme.id}
                 onClick={() => onSelectTheme(theme.id)}
-                className={`p-2 rounded-md border text-center cursor-pointer transition-all ${
-                  isSelected
+                className={`p-2 rounded-md border text-center cursor-pointer transition-all ${isSelected
                     ? `border-orange-500 ${theme.dark ? 'bg-gray-900 text-white' : 'bg-white'}`
                     : `border-gray-200 ${theme.dark ? 'bg-gray-900 text-white' : 'bg-white'}`
-                }`}
+                  }`}
               >
                 <div className={`h-10 rounded-md border flex flex-col items-center justify-center p-1 mb-1.5 ${theme.containerBg}`}>
                   <div className={`w-6 h-1 rounded-full mb-1 ${theme.barColor}`} />

@@ -50,7 +50,7 @@ const AssetsSection = memo(function AssetsSection({
       <button
         type="button"
         onClick={onToggle}
-        className="w-full flex items-center justify-between font-bold text-xs text-gray-900 cursor-pointer"
+        className="w-full flex items-center justify-between font-bold text-sm text-gray-900 cursor-pointer"
       >
         <span>{merchantName.endsWith("'s") ? merchantName : `${merchantName}'s`} Assets</span>
         {isOpen ? <ChevronUp className="w-4 h-4 text-gray-500" /> : <ChevronDown className="w-4 h-4 text-gray-500" />}

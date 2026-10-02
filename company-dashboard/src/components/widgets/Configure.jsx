@@ -1,4 +1,4 @@
-import { useState, useCallback, memo } from 'react';
+import { useState, useEffect, useCallback, memo } from 'react';
 import { FileText, PanelRight, ShoppingBag, CreditCard, ArrowRight, Minus, Equal, IndianRupee } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
@@ -149,9 +149,26 @@ const PlacementCard = memo(function PlacementCard({ item, data, onChange }) {
   );
 });
 
+const normalizeConfig = (raw) => {
+  const base = raw && typeof raw === 'object' ? raw : {};
+  return {
+    pdp: { ...DEFAULT_CONFIG.pdp, ...(base.pdp || {}) },
+    'mini-cart': { ...DEFAULT_CONFIG['mini-cart'], ...(base['mini-cart'] || {}) },
+    cart: { ...DEFAULT_CONFIG.cart, ...(base.cart || {}) },
+    checkout: { ...DEFAULT_CONFIG.checkout, ...(base.checkout || {}) },
+  };
+};
+
 export default function Configure({ initialConfig, onContinue }) {
-  const [config, setConfig] = useState(() => initialConfig || DEFAULT_CONFIG);
-  const activeCount = Object.values(config).filter((c) => c.enabled).length;
+  const [config, setConfig] = useState(() => normalizeConfig(initialConfig));
+
+  useEffect(() => {
+    if (initialConfig && Object.keys(initialConfig).length > 0) {
+      setConfig((prev) => normalizeConfig({ ...initialConfig, ...prev }));
+    }
+  }, [initialConfig]);
+
+  const activeCount = Object.values(config).filter((c) => c?.enabled).length;
 
   const handlePlacementChange = useCallback((id, updatedData) => {
     setConfig((prev) => ({ ...prev, [id]: updatedData }));
@@ -175,7 +192,7 @@ export default function Configure({ initialConfig, onContinue }) {
           <PlacementCard
             key={item.id}
             item={item}
-            data={config[item.id] || DEFAULT_CONFIG[item.id]}
+            data={config[item.id]}
             onChange={handlePlacementChange}
           />
         ))}

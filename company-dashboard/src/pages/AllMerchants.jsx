@@ -14,6 +14,7 @@ import Customization from '@/components/widgets/Customization';
 import Coupons from '@/components/widgets/Coupons';
 import Targeting from '@/components/widgets/Targeting';
 import { IconSpinner } from '../components/common/Icons';
+import { toast } from 'sonner';
 
 const STEP_MAP = {
   merchant: 1,
@@ -149,25 +150,11 @@ export default function AllMerchants({ user, mode }) {
               initialData={isEditMode ? targetMerchant : wizardData}
               isEdit={isEditMode}
               onCancel={handleClose}
-              onSuccess={async (step1Data) => {
-                let savedMerchant = step1Data;
-                try {
-                  const payload = isEditMode
-                    ? { ...step1Data, id: targetMerchant?.id || activeMerchantId }
-                    : step1Data;
-                  const res = isEditMode
-                    ? await apiService.updateMerchantCredential(payload)
-                    : await apiService.addMerchantCredential(payload);
-                  if (res?.merchant) savedMerchant = res.merchant;
-                  fetchMerchants();
-                } catch (err) {
-                  console.warn('Failed to save merchant to DB:', err?.message);
-                }
-
+              onSuccess={(step1Data) => {
                 setWizardData((prev) => ({
                   ...prev,
                   ...step1Data,
-                  id: savedMerchant.id || prev.id || activeMerchantId,
+                  id: isEditMode ? (targetMerchant?.id || activeMerchantId) : prev.id,
                   shop: step1Data.shop || prev.shop || targetMerchant?.shop,
                 }));
                 setOnboardingStep(2);
@@ -183,8 +170,6 @@ export default function AllMerchants({ user, mode }) {
             onBack={() => setOnboardingStep(1)}
             onContinue={(plans) => {
               setWizardData((prev) => ({ ...prev, plans }));
-              const shopDomain = wizardData?.shop || targetMerchant?.shop;
-              apiService.saveWidgetCustomization({ shopDomain, plans }).catch(() => { });
               setOnboardingStep(3);
             }}
           />
@@ -197,8 +182,6 @@ export default function AllMerchants({ user, mode }) {
             onBack={() => setOnboardingStep(2)}
             onContinue={(priceBandsData) => {
               setWizardData((prev) => ({ ...prev, priceBands: priceBandsData }));
-              const shopDomain = wizardData?.shop || targetMerchant?.shop;
-              apiService.saveWidgetCustomization({ shopDomain, priceBands: priceBandsData }).catch(() => { });
               setOnboardingStep(4);
             }}
           />
@@ -212,8 +195,6 @@ export default function AllMerchants({ user, mode }) {
             onBack={() => setOnboardingStep(3)}
             onContinue={(configuration) => {
               setWizardData((prev) => ({ ...prev, configuration }));
-              const shopDomain = wizardData?.shop || targetMerchant?.shop;
-              apiService.saveWidgetCustomization({ shopDomain, configure: configuration }).catch(() => { });
               setOnboardingStep(5);
             }}
           />
@@ -222,16 +203,18 @@ export default function AllMerchants({ user, mode }) {
         {onboardingStep === 5 && (
           <Customization
             merchantName={wizardData.name || targetMerchant?.name || "Neeman's"}
-            brandingMode={wizardData.brandingMode || targetMerchant?.brandingMode || "WHITE_LABEL"}
+            brandingMode={wizardData.brandingMode || targetMerchant?.brandingMode || "snapmint"}
             plans={wizardData.plans || []}
             priceBands={wizardData.priceBands || {}}
             configuration={wizardData.configuration || {}}
             initialCustomization={wizardData.customization || {}}
             onBack={() => setOnboardingStep(4)}
             onContinue={(customization) => {
-              setWizardData((prev) => ({ ...prev, customization }));
-              const shopDomain = wizardData?.shop || targetMerchant?.shop;
-              apiService.saveWidgetCustomization({ shopDomain, customization }).catch(() => { });
+              setWizardData((prev) => ({
+                ...prev,
+                customization,
+                ...(customization?.brandingMode ? { brandingMode: customization.brandingMode } : {}),
+              }));
               setOnboardingStep(6);
             }}
           />
@@ -253,16 +236,58 @@ export default function AllMerchants({ user, mode }) {
         {onboardingStep === 7 && (
           <Targeting
             wizardData={wizardData}
-            selectedShop={targetMerchant}
+            selectedShop={targetMerchant || (wizardData.shop ? { name: wizardData.name, myshopifyDomain: wizardData.shop } : null)}
             onBack={() => setOnboardingStep(6)}
             onComplete={async (targetingData) => {
               setWizardData((prev) => ({ ...prev, ...targetingData }));
-              const shopId = targetMerchant?.id || wizardData?.id;
-              const shopDomain = wizardData?.shop || targetMerchant?.shop;
+
+              let savedMerchant = targetMerchant;
+              try {
+                if (isEditMode) {
+                  const payload = {
+                    id: targetMerchant?.id || activeMerchantId,
+                    name: wizardData.name || targetMerchant?.name,
+                    shop: wizardData.shop || targetMerchant?.shop,
+                    merchantId: wizardData.merchantId || targetMerchant?.merchantId,
+                    brandingMode: wizardData.brandingMode || targetMerchant?.brandingMode,
+                  };
+                  const res = await apiService.updateMerchantCredential(payload);
+                  if (res?.merchant) savedMerchant = res.merchant;
+                } else {
+                  const payload = {
+                    name: wizardData.name,
+                    shop: wizardData.shop,
+                    merchantId: wizardData.merchantId,
+                    brandingMode: wizardData.brandingMode || 'snapmint',
+                  };
+                  const res = await apiService.addMerchantCredential(payload);
+                  if (res?.merchant) savedMerchant = res.merchant;
+                }
+              } catch (err) {
+                console.error('Failed to save merchant credentials:', err);
+                toast.error(err?.message || 'Failed to save merchant credentials');
+                return;
+              }
+
+              const finalShopId = savedMerchant?.id || targetMerchant?.id || activeMerchantId;
+              const finalShopDomain = wizardData?.shop || savedMerchant?.shop || targetMerchant?.shop;
+
+              if (finalShopId) {
+                try {
+                  await apiService.updateAutoSetup({
+                    shopId: finalShopId,
+                    myshopifyDomain: finalShopDomain,
+                    ...targetingData,
+                  });
+                } catch (err) {
+                  console.warn('Failed to save auto setup targeting:', err?.message);
+                }
+              }
+
               try {
                 await apiService.saveWidgetCustomization({
-                  shopId,
-                  shopDomain,
+                  shopId: finalShopId,
+                  shopDomain: finalShopDomain,
                   plans: wizardData.plans || targetMerchant?.plans || [],
                   priceBands: wizardData.priceBands || targetMerchant?.priceBands || {},
                   configure: wizardData.configuration || targetMerchant?.configuration || {},
@@ -270,10 +295,13 @@ export default function AllMerchants({ user, mode }) {
                   targeting: targetingData,
                   isActive: true,
                 });
+                toast.success(isEditMode ? 'Merchant updated successfully!' : 'Merchant onboarded successfully!');
+                await fetchMerchants();
+                handleClose();
               } catch (err) {
-                console.warn('Failed to save final widget customization:', err?.message);
+                console.error('Failed to save final widget customization:', err);
+                toast.error(err?.message || 'Failed to save widget customization');
               }
-              handleClose();
             }}
           />
         )}

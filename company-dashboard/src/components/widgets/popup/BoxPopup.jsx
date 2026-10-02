@@ -2,6 +2,8 @@ import React from 'react';
 import { CloseIcon, ClockIcon, formatRupee } from '../shared/PopupIcons';
 import { ModalFooter, ModalFeatures } from '../shared/PopupFooter';
 import TotalOrderValueCard, { calculateOrderDiscount } from './TotalOrderValueCard';
+import PopupCornerRibbon from '../shared/PopupRibbons';
+import ExpressBottomSection from '../shared/ExpressBottomSection';
 
 export default function BoxPopup({
   merchantName = "Neeman's",
@@ -9,6 +11,8 @@ export default function BoxPopup({
   downPaymentPercent = 50,
   tenure = 12,
   popupType = 'info',
+  showExpress = true,
+  expressTab = 'name',
   onClose,
   customText,
   cashback,
@@ -31,22 +35,24 @@ export default function BoxPopup({
     ? rawAmountTitle.replace('{amount}', formattedDp)
     : (rawAmountTitle || `${formattedDp} Now`);
 
+  const showCashback = cashback?.enabled !== false;
   const showOffers = offers?.enabled !== false;
   const showDealTag = showOffers && offers?.limitedTimeDealTag !== false;
   const showOfferRibbon = showOffers && offers?.offerRibbon !== false;
   const showOfferNote = showOffers && offers?.offerNote !== false;
   const offerNoteText = offers?.offerNoteText || 'Offer will change for order value greater than ₹3000 and users with no credit history. *T&C';
+  const ribbonLabel = showCashback && showOffers ? 'Snapmint' : 'Cashback';
 
   return (
     <div className="snp-modal" data-snp-el="popup-bg">
-      {/* Corner Serrated Extra 5% Off Ribbon */}
-      {showOfferRibbon && (
-        <div className="snp-extra-off-wrapper">
-          <div className="snp-extra-off-ribbon">
-            <span className="snp-extra-off-text">EXTRA 5% OFF</span>
-          </div>
-        </div>
-      )}
+      {/* Corner Ribbon */}
+      <PopupCornerRibbon
+        showCashback={showCashback}
+        showOfferRibbon={!showCashback && showOfferRibbon}
+        ribbonLabel={ribbonLabel}
+        merchantName={merchantName}
+        showOffers={showOffers}
+      />
 
       {/* Close Button */}
       {onClose && (
@@ -96,6 +102,15 @@ export default function BoxPopup({
       {/* Offer Disclaimer Note */}
       {showOfferNote && (
         <p className="snp-offer-note" data-snp-el="offer-note" style={{ color: 'var(--snp-color-offer-note-custom, var(--snp-color-offer-note))' }}>{offerNoteText}</p>
+      )}
+
+      {/* Express Bottom Section */}
+      {showExpress && popupType === 'express' && (
+        <ExpressBottomSection
+          merchantName={merchantName}
+          expressTab={expressTab}
+          customText={customText}
+        />
       )}
 
       {/* Footer Area according to popupType */}

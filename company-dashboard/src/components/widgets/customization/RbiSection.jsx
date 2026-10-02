@@ -21,7 +21,7 @@ const RbiSection = memo(function RbiSection({
   return (
     <div className="p-4 border-t border-gray-100">
       <div className="flex items-center justify-between mb-1">
-        <span className="font-bold text-xs text-gray-900">RBI regulated &amp; trusted users</span>
+        <span className="font-bold text-sm text-gray-900">RBI regulated &amp; trusted users</span>
         <div className="flex items-center gap-2">
           <button
             type="button"

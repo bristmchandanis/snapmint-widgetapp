@@ -127,10 +127,14 @@ export default function Targeting({
     const payload = { shopId, myshopifyDomain, ...formData };
 
     try {
-      if (shopId) await apiService.updateAutoSetup(payload);
-      toast.success('Targeting configuration saved successfully!');
+      if (!onComplete && shopId) {
+        await apiService.updateAutoSetup(payload);
+        toast.success('Targeting configuration saved successfully!');
+      }
     } catch (err) {
-      toast.error(err?.message || 'Failed to save targeting to server, saved locally.');
+      if (!onComplete) {
+        toast.error(err?.message || 'Failed to save targeting to server, saved locally.');
+      }
     } finally {
       setSaving(false);
       onComplete?.(payload);

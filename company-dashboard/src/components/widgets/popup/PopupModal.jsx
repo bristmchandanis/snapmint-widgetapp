@@ -16,10 +16,14 @@ export default function PopupModal({
   fixedDp = 1,
   tenure = 3,
   eligibleTenures = [3, 6],
+  popupType = 'info',
+  showExpress = true,
+  expressTab = 'name',
+  ...rest
 }) {
   if (!isOpen) return null;
 
-  let ModalComponent = PiePopup;
+  let ModalComponent;
   const style = String(popupStyle).toLowerCase();
 
   if (style === 'multiplan' || style === 'multi-layer' || style === 'multilayer') {
@@ -40,7 +44,11 @@ export default function PopupModal({
       fixedDp={fixedDp}
       tenure={tenure}
       eligibleTenures={eligibleTenures}
+      popupType={popupType}
+      showExpress={showExpress}
+      expressTab={expressTab}
       onClose={onClose}
+      {...rest}
     />
   );
 

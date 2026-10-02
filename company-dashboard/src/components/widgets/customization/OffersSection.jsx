@@ -37,7 +37,7 @@ const OffersSection = memo(function OffersSection({
     <div className="p-4 border-t border-gray-100">
       {/* Section Header */}
       <div className="flex items-center justify-between mb-1">
-        <span className="font-bold text-xs text-gray-900">Offers</span>
+        <span className="font-bold text-sm text-gray-900">Offers</span>
         <div className="flex items-center gap-2">
           <button
             type="button"

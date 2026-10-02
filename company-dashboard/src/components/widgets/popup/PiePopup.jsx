@@ -1,8 +1,9 @@
 import React from 'react';
-import { ChevronDown } from 'lucide-react';
-import { CloseIcon, ClockIcon, ChevronRightIcon, formatRupee } from '../shared/PopupIcons';
+import { CloseIcon, ClockIcon, formatRupee } from '../shared/PopupIcons';
 import { ModalFooter, ModalFeatures } from '../shared/PopupFooter';
 import TotalOrderValueCard, { calculateOrderDiscount } from './TotalOrderValueCard';
+import PopupCornerRibbon from '../shared/PopupRibbons';
+import ExpressBottomSection from '../shared/ExpressBottomSection';
 
 export default function PiePopup({
   merchantName = "Neeman's",
@@ -11,6 +12,7 @@ export default function PiePopup({
   tenure = 3,
   popupType = 'info',
   showExpress = true,
+  expressTab = 'name',
   onClose,
   customText,
   cashback,
@@ -32,10 +34,7 @@ export default function PiePopup({
     ? rawAmountTitle.replace('{amount}', formattedDp)
     : (rawAmountTitle || `${formattedDp} Now`);
 
-  const rawSizeSheetTitle = customText?.sizeSheetTitle !== undefined ? customText.sizeSheetTitle : 'Choose Size for {merchant} EMI Purchase';
-  const renderedSizeSheetTitle = rawSizeSheetTitle.includes('{merchant}')
-    ? rawSizeSheetTitle.replace('{merchant}', merchantName)
-    : rawSizeSheetTitle;
+
 
   const showCashback = cashback?.enabled !== false;
   const showOffers = offers?.enabled !== false;
@@ -50,61 +49,14 @@ export default function PiePopup({
 
   return (
     <div className="snp-modal" data-snp-el="popup-bg">
-      {/* 10% Cashback Corner Ribbon */}
-      {showCashback && (
-        <div className="snp-corner-ribbon-wrapper">
-          <div className="snp-corner-ribbon" data-snp-el="corner-ribbon" style={{ backgroundColor: 'var(--snp-color-cashback-ribbon-bg, #D1F4FC)' }}>
-            <svg className="snp-coin-icon" width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M21.2894 21.2898C25.2086 17.3705 25.2086 11.0162 21.2894 7.0969C17.3701 3.17763 11.0157 3.17764 7.09646 7.0969C3.17719 11.0162 3.17719 17.3705 7.09645 21.2898C11.0157 25.2091 17.3701 25.2091 21.2894 21.2898Z" fill="url(#paint0_linear_54624_117260)" />
-              <path d="M8.61213 8.85662C11.5595 5.90924 16.3382 5.90922 19.2856 8.8566C22.233 11.804 22.233 16.5827 19.2856 19.5301C16.3383 22.4775 11.5595 22.4775 8.61212 19.5301C5.66475 16.5827 5.66477 11.804 8.61213 8.85662Z" fill="url(#paint1_linear_54624_117260)" fillOpacity="0.4" stroke="url(#paint2_linear_54624_117260)" strokeWidth="0.731463" />
-              <g filter="url(#filter0_d_54624_117260)">
-                <path d="M14.3337 9.28561L14.9101 11.1373C13.8278 11.4603 12.9733 11.9036 12.4869 12.3899C12.1518 12.7251 12.0437 13.0927 12.3147 13.3636C13.1168 14.1657 15.7969 10.7053 17.8235 12.7544C19.0266 13.9575 18.6396 15.6666 17.2341 17.0722C16.2612 18.045 15.039 18.7037 13.7943 18.8646L13.1967 17.0776C14.3221 16.8842 15.3389 16.3878 15.9875 15.7392C16.3552 15.3715 16.4953 14.9715 16.2243 14.7005C15.3679 13.8441 12.7963 17.3046 10.7587 15.2451C9.55565 14.042 9.92137 12.3755 11.2726 11.0243C12.1159 10.181 13.1973 9.57645 14.3337 9.28561Z" fill="url(#paint3_linear_54624_117260)" />
-              </g>
-              <defs>
-                <filter id="filter0_d_54624_117260" x="10.0293" y="9.07295" width="8.77698" height="9.79229" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-                  <feFlood floodOpacity="0" result="BackgroundImageFix" />
-                  <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
-                  <feOffset dx="0.265264" dy="-0.212211" />
-                  <feComposite in2="hardAlpha" operator="out" />
-                  <feColorMatrix type="matrix" values="0 0 0 0 0.363075 0 0 0 0 0.162259 0 0 0 0 0 0 0 0 1 0" />
-                  <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_54624_117260" />
-                  <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_54624_117260" result="shape" />
-                </filter>
-                <linearGradient id="paint0_linear_54624_117260" x1="13.1466" y1="3.29088" x2="14.5265" y2="25.1716" gradientUnits="userSpaceOnUse">
-                  <stop offset="0.38705" stopColor="#FFE300" />
-                  <stop offset="0.833073" stopColor="#FFA700" />
-                </linearGradient>
-                <linearGradient id="paint1_linear_54624_117260" x1="13.1239" y1="5.59715" x2="14.2119" y2="22.8493" gradientUnits="userSpaceOnUse">
-                  <stop offset="0.283654" stopColor="#FFE300" />
-                  <stop offset="0.480769" stopColor="white" />
-                  <stop offset="0.8125" stopColor="#FFA700" />
-                </linearGradient>
-                <linearGradient id="paint2_linear_54624_117260" x1="9.58181" y1="0.409853" x2="16.6783" y2="26.7486" gradientUnits="userSpaceOnUse">
-                  <stop stopColor="#FFBC00" />
-                  <stop offset="1" stopColor="#FFBC00" />
-                </linearGradient>
-                <linearGradient id="paint3_linear_54624_117260" x1="14.5444" y1="17.6649" x2="12.4662" y2="11.0274" gradientUnits="userSpaceOnUse">
-                  <stop offset="0.0100154" stopColor="#EB6C01" />
-                  <stop offset="0.585661" stopColor="#FFA400" />
-                </linearGradient>
-              </defs>
-            </svg>
-            <div className="snp-ribbon-content">
-              <span className="snp-ribbon-title" style={{ color: 'var(--snp-color-cashback-ribbon-text, #0b1f33)' }}>10% {ribbonLabel}</span>
-              <span className="snp-ribbon-sub" style={{ color: 'var(--snp-color-cashback-ribbon-text, #0b1f33)' }}>Cashback <small className="snp-ribbon-tnc">T&C</small></span>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* EXTRA 5% OFF Corner Ribbon - only when Offers ON and Cashback OFF */}
-      {!showCashback && showOfferRibbon && (
-        <div className="snp-extra-off-wrapper">
-          <div className="snp-extra-off-ribbon" data-snp-el="corner-ribbon">
-            <span className="snp-extra-off-text">EXTRA 5% OFF</span>
-          </div>
-        </div>
-      )}
+      {/* Corner Ribbon */}
+      <PopupCornerRibbon
+        showCashback={showCashback}
+        showOfferRibbon={!showCashback && showOfferRibbon}
+        ribbonLabel={ribbonLabel}
+        merchantName={merchantName}
+        showOffers={showOffers}
+      />
 
       {/* Close Button */}
       {onClose && (
@@ -252,221 +204,11 @@ export default function PiePopup({
 
       {/* Express Bottom Section */}
       {showExpress && popupType === 'express' && (
-        <div
-          className="snp-express-section"
-          data-snp-el="express-bottom"
-          style={{
-            backgroundColor: 'var(--snp-color-bottom-bg, #F1F5F9)',
-            borderTop: '1px solid var(--snp-color-divider, #E2E8F0)',
-            padding: '14px 16px',
-            textAlign: 'center',
-          }}
-        >
-          {expressTab === 'name' ? (
-            <div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '8px' }}>
-                <input
-                  type="text"
-                  placeholder="Full Name"
-                  className="snp-express-input"
-                  style={{
-                    backgroundColor: 'var(--snp-color-field-bg, #FFFFFF)',
-                    color: 'var(--snp-color-entered-text, var(--snp-color-bottom-text, #151E29))',
-                    borderColor: 'var(--snp-color-field-border, #CBD5E1)',
-                    borderWidth: '1px',
-                    borderStyle: 'solid',
-                    borderRadius: '8px',
-                    padding: '8px 12px',
-                    fontSize: '11px',
-                    fontStyle: 'italic',
-                    fontWeight: '500',
-                    outline: 'none',
-                    width: '100%',
-                    boxSizing: 'border-box',
-                  }}
-                />
-                <input
-                  type="text"
-                  placeholder="Last Name"
-                  className="snp-express-input"
-                  style={{
-                    backgroundColor: 'var(--snp-color-field-bg, #FFFFFF)',
-                    color: 'var(--snp-color-entered-text, var(--snp-color-bottom-text, #151E29))',
-                    borderColor: 'var(--snp-color-field-border, #CBD5E1)',
-                    borderWidth: '1px',
-                    borderStyle: 'solid',
-                    borderRadius: '8px',
-                    padding: '8px 12px',
-                    fontSize: '11px',
-                    fontStyle: 'italic',
-                    fontWeight: '500',
-                    outline: 'none',
-                    width: '100%',
-                    boxSizing: 'border-box',
-                  }}
-                />
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                <input
-                  type="tel"
-                  placeholder="+91 Mobile No."
-                  className="snp-express-input"
-                  style={{
-                    backgroundColor: 'var(--snp-color-field-bg, #FFFFFF)',
-                    color: 'var(--snp-color-entered-text, var(--snp-color-bottom-text, #151E29))',
-                    borderColor: 'var(--snp-color-field-border, #CBD5E1)',
-                    borderWidth: '1px',
-                    borderStyle: 'solid',
-                    borderRadius: '8px',
-                    padding: '8px 12px',
-                    fontSize: '11px',
-                    fontStyle: 'italic',
-                    fontWeight: '500',
-                    outline: 'none',
-                    width: '100%',
-                    boxSizing: 'border-box',
-                  }}
-                />
-                <button
-                  type="button"
-                  className="snp-express-btn"
-                  style={{
-                    width: '100%',
-                    padding: '8px 12px',
-                    borderRadius: 'var(--snp-radius-button, 8px)',
-                    fontWeight: '700',
-                    fontStyle: 'italic',
-                    fontSize: '11px',
-                    backgroundColor: 'var(--snp-color-button-fill, var(--snp-color-primary, #FF6F00))',
-                    color: 'var(--snp-color-button-text, #FFFFFF)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '6px',
-                    border: 'none',
-                    cursor: 'pointer',
-                    boxSizing: 'border-box',
-                  }}
-                >
-                  <span>Buy On EMI</span>
-                  <span>&gt;</span>
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '8px' }}>
-                <div style={{ position: 'relative', width: '100%' }}>
-                  <select
-                    className="snp-express-select"
-                    style={{
-                      width: '100%',
-                      appearance: 'none',
-                      WebkitAppearance: 'none',
-                      backgroundColor: 'var(--snp-color-field-bg, #FFFFFF)',
-                      color: 'var(--snp-color-field-placeholder, #334255)',
-                      borderColor: 'var(--snp-color-field-border, #CBD5E1)',
-                      borderWidth: '1px',
-                      borderStyle: 'solid',
-                      borderRadius: '8px',
-                      padding: '8px 28px 8px 12px',
-                      fontSize: '11px',
-                      fontStyle: 'italic',
-                      fontWeight: '500',
-                      outline: 'none',
-                      cursor: 'pointer',
-                      boxSizing: 'border-box',
-                    }}
-                  >
-                    <option>Select Size</option>
-                    <option>UK 7</option>
-                    <option>UK 8</option>
-                    <option>UK 9</option>
-                  </select>
-                  <ChevronDown
-                    style={{
-                      position: 'absolute',
-                      right: '10px',
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      width: '14px',
-                      height: '14px',
-                      color: '#334255',
-                      pointerEvents: 'none',
-                    }}
-                  />
-                </div>
-
-                <div style={{ position: 'relative', width: '100%' }}>
-                  <select
-                    className="snp-express-select"
-                    style={{
-                      width: '100%',
-                      appearance: 'none',
-                      WebkitAppearance: 'none',
-                      backgroundColor: 'var(--snp-color-field-bg, #FFFFFF)',
-                      color: 'var(--snp-color-field-placeholder, #334255)',
-                      borderColor: 'var(--snp-color-field-border, #CBD5E1)',
-                      borderWidth: '1px',
-                      borderStyle: 'solid',
-                      borderRadius: '8px',
-                      padding: '8px 28px 8px 12px',
-                      fontSize: '11px',
-                      fontStyle: 'italic',
-                      fontWeight: '500',
-                      outline: 'none',
-                      cursor: 'pointer',
-                      boxSizing: 'border-box',
-                    }}
-                  >
-                    <option>Select Color</option>
-                    <option>Brown</option>
-                    <option>Black</option>
-                    <option>White</option>
-                  </select>
-                  <ChevronDown
-                    style={{
-                      position: 'absolute',
-                      right: '10px',
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      width: '14px',
-                      height: '14px',
-                      color: '#334255',
-                      pointerEvents: 'none',
-                    }}
-                  />
-                </div>
-              </div>
-
-              <button
-                type="button"
-                className="snp-express-btn"
-                style={{
-                  width: '100%',
-                  padding: '9px 12px',
-                  borderRadius: 'var(--snp-radius-button, 8px)',
-                  fontWeight: '700',
-                  fontStyle: 'italic',
-                  fontSize: '11px',
-                  backgroundColor: 'var(--snp-color-button-fill, var(--snp-color-primary, #FF6F00))',
-                  color: 'var(--snp-color-button-text, #FFFFFF)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '6px',
-                  border: 'none',
-                  cursor: 'pointer',
-                  boxSizing: 'border-box',
-                }}
-              >
-                <span>Buy On EMI</span>
-                <span>&gt;</span>
-              </button>
-            </div>
-          )}
-        </div>
+        <ExpressBottomSection
+          merchantName={merchantName}
+          expressTab={expressTab}
+          customText={customText}
+        />
       )}
 
       {/* Footer Area according to popupType */}
