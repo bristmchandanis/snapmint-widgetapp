@@ -8,7 +8,7 @@ import { appRoutesURL } from './routes/appRoutesURL';
 
 const Login = lazy(() => import('./pages/Login'));
 const Stores = lazy(() => import('./pages/Stores'));
-const MerchantOnboard = lazy(() => import('./pages/MerchantOnboard'));
+const AllMerchants = lazy(() => import('./pages/AllMerchants'));
 const WidgetCustomization = lazy(() => import('./pages/WidgetCustomization'));
 const Analytics = lazy(() => import('./pages/Analytics'));
 const Profile = lazy(() => import('./pages/Profile'));
@@ -78,10 +78,11 @@ export default function App() {
           <Route element={isAuth ? <DashboardLayout user={user} onLogout={handleLogout} onUserRoleUpdated={saveUser} /> : <Navigate to={appRoutesURL.login} replace />}>
             <Route index element={<Navigate to={appRoutesURL.stores} replace />} />
             <Route path="stores" element={<Stores user={user} />} />
-            <Route path="merchant-onboard/create" element={<MerchantOnboard user={user} mode="create" />} />
-            <Route path="merchant-onboard/edit/:editId" element={<MerchantOnboard user={user} mode="edit" />} />
-            <Route path="merchant-onboard/delete/:deleteId" element={<MerchantOnboard user={user} mode="delete" />} />
-            <Route path="merchant-onboard" element={<MerchantOnboard user={user} />} />
+            <Route path="merchant-onboard/create/:step" element={<AllMerchants user={user} mode="create" />} />\r
+            <Route path="merchant-onboard/create" element={<AllMerchants user={user} mode="create" />} />\r
+            <Route path="merchant-onboard/edit/:editId" element={<AllMerchants user={user} mode="edit" />} />
+            <Route path="merchant-onboard/:merchantId" element={<AllMerchants user={user} mode="details" />} />
+            <Route path="merchant-onboard" element={<AllMerchants user={user} />} />
             <Route path="widget-customization/create/:masterTemplateId" element={<WidgetCustomization user={user} mode="create" />} />
             <Route path="widget-customization/create" element={<WidgetCustomization user={user} mode="create" />} />
             <Route path="widget-customization/edit/:id" element={<WidgetCustomization user={user} mode="edit" />} />

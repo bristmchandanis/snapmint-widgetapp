@@ -12,6 +12,7 @@ export default function FormField({
   placeholder,
   value,
   error,
+  hint,
   icon: Icon,
   onChange,
   onBlur,
@@ -44,9 +45,8 @@ export default function FormField({
             autoComplete={autoComplete}
             disabled={disabled}
             readOnly={readOnly}
-            className={`${Icon ? 'pl-10' : 'pl-3.5'} ${type === 'textarea' ? 'min-h-[75px] py-2' : 'h-9'} text-xs sm:text-sm font-medium bg-white border-gray-200 text-gray-900 focus:border-gray-400 transition-all ${
-              isPasswordType ? 'pr-10' : ''
-            } ${error ? 'border-rose-400 focus:border-rose-500 focus:ring-rose-500/10' : ''} ${disabled || readOnly ? 'disabled:opacity-100 disabled:bg-white disabled:text-gray-900 readOnly:opacity-100 readOnly:bg-white readOnly:text-gray-900 cursor-default' : ''} ${className}`}
+            className={`${Icon ? 'pl-10' : 'pl-3.5'} ${type === 'textarea' ? 'min-h-[75px] py-2' : 'h-10'} text-xs bg-white border-gray-200 text-gray-900 focus:border-gray-400 transition-all ${isPasswordType ? 'pr-10' : ''
+              } ${error ? 'border-red-500 focus:border-red-500 focus:ring-red-500/10' : ''} ${disabled || readOnly ? 'disabled:opacity-100 disabled:bg-white disabled:text-gray-900 readOnly:opacity-100 readOnly:bg-white readOnly:text-gray-900 cursor-default' : ''} ${className}`}
             value={value != null ? value : ''}
             onChange={onChange}
             onBlur={onBlur}
@@ -66,7 +66,11 @@ export default function FormField({
         </div>
         {action}
       </div>
-      {error && <p className="text-xs font-semibold text-rose-500 mt-1">{error}</p>}
+      {error ? (
+        <p className="text-[11px] font-medium text-red-600 mt-1">{error}</p>
+      ) : hint ? (
+        <p className="text-[11px] text-gray-400 mt-1">{hint}</p>
+      ) : null}
     </div>
   );
 }

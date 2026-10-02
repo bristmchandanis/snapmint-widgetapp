@@ -11,30 +11,28 @@ export const cleanShopDomain = (domainStr) => {
 };
 
 export const merchantSchema = z.object({
-  shop: z
+  name: z
     .string()
-    .min(1, { message: 'Shop domain or name is required' })
-    .transform((val) => cleanShopDomain(val))
-    .refine((val) => val.length >= 2, {
-      message: 'Please enter a valid shop domain or name',
-    }),
+    .trim()
+    .min(1, { message: "Enter the merchant's name." }),
   merchantId: z
     .string()
     .trim()
-    .min(1, { message: 'Merchant ID is required' })
-    .min(2, { message: 'Merchant ID must be at least 2 characters long' }),
-  token: z
+    .min(1, { message: "Enter the merchant's assigned ID." }),
+  shop: z
     .string()
-    .trim()
-    .min(1, { message: 'Snapmint token is required' })
-    .min(3, { message: 'Token must be at least 3 characters long' }),
+    .min(1, { message: "Enter a valid store address (e.g. store.myshopify.com)." })
+    .transform((val) => cleanShopDomain(val))
+    .refine((val) => val.length >= 2, {
+      message: 'Enter a valid store address (e.g. store.myshopify.com).',
+    }),
+  brandingMode: z.string().optional(),
 });
 
 export const validateMerchantForm = (data) => {
   const normalizedData = {
     ...data,
-    shop: cleanShopDomain(data.shop),
-    merchantId: data.merchantId || data.mid || '',
+    shop: cleanShopDomain(data.shop || ''),
   };
   return validateForm(merchantSchema, normalizedData);
 };
@@ -43,6 +41,5 @@ export const validateMerchantField = (fieldName, value) => {
   if (fieldName === 'shop') {
     value = cleanShopDomain(value);
   }
-  const targetField = fieldName === 'mid' ? 'merchantId' : fieldName;
-  return validateField(merchantSchema, targetField, value);
+  return validateField(merchantSchema, fieldName, value);
 };

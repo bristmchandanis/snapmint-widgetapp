@@ -8,6 +8,12 @@ export const formatDate = (dateVal) => {
   return d.format('MMM D, YYYY');
 };
 
+export const formatCurrency = (val) => {
+  const num = Number(val);
+  if (isNaN(num)) return '₹0';
+  return `₹${num.toLocaleString('en-IN')}`;
+};
+
 export const isShopApproved = (onboardStatus) => {
   const status = String(onboardStatus || '').toUpperCase();
   return status === 'APPROVED' || status === 'ACTIVE' || String(onboardStatus) === '1';

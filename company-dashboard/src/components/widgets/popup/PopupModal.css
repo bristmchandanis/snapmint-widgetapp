@@ -1,0 +1,1183 @@
+:root {
+    /* Global Font Family & Size Variables */
+    --snp-font-family: 'Archivo', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    --snp-font-inter: 'Inter', sans-serif;
+    --snp-font-size-xs: 10px;
+    --snp-font-size-sm: 12px;
+    --snp-font-size-md: 14px;
+    --snp-font-size-lg: 16px;
+    --snp-font-size-xl: 18px;
+    --snp-font-size-2xl: 24px;
+    --snp-font-size-3xl: 32px;
+
+    /* Corner Radius Variables */
+    --snp-radius-modal: 16px;
+    --snp-radius-container: 16px;
+    --snp-radius-button: 6px;
+
+    /* Global Color Variables */
+    --snp-color-primary: #FF6F00;
+    --snp-color-primary-hover: #FF6F00;
+    --snp-color-primary-bg: #FFF5EA;
+    --snp-color-dark-slice: #19202a;
+    --snp-color-light-slice: #f0f4f8;
+
+    /* Text Colors */
+    --snp-color-text-primary: #151E29;
+    --snp-color-text-secondary: #151E29;
+    --snp-color-text-muted: #334255;
+    --snp-color-text-feature: #151E29;
+    --snp-color-text-white: #ffffff;
+
+    /* Background Colors */
+    --snp-color-overlay-bg: #3d3f43;
+    --snp-color-modal-bg: #ffffff;
+    --snp-color-inner-bg: #F1F5F9;
+    --snp-color-card-bg: #ffffff;
+    --snp-color-pill-bg: #ffffff;
+    --snp-color-footer-bg: #f1f5f9;
+    --snp-color-divider: #E2E8F0;
+
+    /* Ribbon Colors */
+    --snp-color-ribbon-bg: linear-gradient(135deg, #d3f4ff 0%, #b8e8ff 100%);
+    --snp-color-ribbon-text: #0b1f33;
+
+    /* Deal Badge Colors */
+    --snp-color-deal-bg: #FFF5EA;
+    --snp-color-deal-border: #ffdccc;
+    --snp-color-deal-text: #CC4F02;
+    --snp-color-deal-icon: #c84b12;
+
+    /* Offer Note Color */
+    --snp-color-offer-note: #64768B;
+
+    /* Merchant Badge Colors */
+    --snp-color-merchant-bg: #ffffff;
+    --snp-color-merchant-border: #cbd5e1;
+    --snp-color-merchant-text: #151E29;
+
+    /* Discount Banner Colors */
+    --snp-color-discount-text: #151E29;
+    --snp-color-discount-bold: #0f172a;
+
+    /* Extra Off Tag Colors */
+    --snp-color-extra-off-bg: #ff5c00;
+    --snp-color-extra-off-text: #ffffff;
+
+    /* Shadows */
+    --snp-shadow-modal: 0 20px 48px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.12);
+    --snp-shadow-badge: none;
+    --snp-shadow-card: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* Scoped Modal Base Styles (prevents leaking into host dashboard) */
+.snp-wrapper *,
+.snp-modal,
+.snp-modal * {
+    box-sizing: border-box;
+}
+
+.snp-wrapper svg,
+.snp-modal svg {
+    display: block;
+}
+
+/* Modal Outer Wrapper */
+.snp-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Main Modal Card */
+.snp-modal {
+    background-color: var(--snp-color-modal-bg);
+    width: 100%;
+    max-width: 390px;
+    border-radius: var(--snp-radius-modal, 16px);
+    box-shadow: var(--snp-shadow-modal);
+    position: relative;
+    overflow: hidden;
+    font-family: var(--snp-font-body, var(--snp-font-inter));
+    font-style: var(--snp-font-body-style, normal);
+}
+
+/* Close Button */
+.snp-close-btn {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--snp-color-text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    z-index: 10;
+}
+
+.snp-close-btn:hover {
+    background-color: var(--snp-color-inner-bg);
+    color: var(--snp-color-text-primary);
+}
+
+/* Header Section */
+.snp-header {
+    text-align: center;
+    padding-top: 24px;
+    padding-bottom: 10px;
+}
+
+.snp-subtitle {
+    font-size: var(--snp-font-size-lg);
+    font-weight: 500;
+    color: var(--snp-color-text-secondary);
+    line-height: 22px;
+    font-family: var(--snp-font-title, var(--snp-font-family));
+    font-style: var(--snp-font-title-style, normal);
+}
+
+.snp-amount-highlight {
+    font-size: var(--snp-font-size-3xl);
+    font-weight: 700;
+    color: var(--snp-color-text-primary);
+    line-height: 40px;
+    font-family: var(--snp-font-title, var(--snp-font-family));
+    font-style: var(--snp-font-title-style, normal);
+}
+
+.snp-active {
+    color: var(--snp-color-primary);
+}
+
+/* Inner Grey Container */
+.snp-inner-box {
+    background-color: var(--snp-color-inner-bg);
+    margin: 0 24px 16px 24px;
+    border-radius: var(--snp-radius-container, 16px);
+    padding: 16px;
+}
+
+/* Cards Grid */
+.snp-cards-grid {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+}
+
+/* Single Card */
+.snp-card {
+    background-color: var(--snp-color-card-bg);
+    border-radius: 12px;
+    padding-top: 16px;
+    padding-bottom: 8px;
+    text-align: center;
+    position: relative;
+    box-shadow: var(--snp-shadow-card);
+    border: 1px solid transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 0px;
+    min-width: 0;
+}
+
+/* Active Highlight Card */
+.snp-card.snp-card-active {
+    border-color: var(--snp-color-card-outline, var(--snp-color-primary));
+    background-color: var(--snp-color-card-active, var(--snp-color-primary-bg));
+}
+
+/* Pie Chart Container */
+.snp-pie-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 6px;
+    height: 49px;
+    width: 49px;
+}
+
+.snp-pie-svg {
+    display: block;
+}
+
+/* Card Text Styling */
+.snp-card-price {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--snp-color-text-primary);
+    line-height: 26px;
+    font-family: var(--snp-font-family);
+}
+
+.snp-card-price.snp-active {
+    color: var(--snp-color-primary);
+}
+
+.snp-card-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--snp-color-text-muted);
+    line-height: 14px;
+    font-family: var(--snp-font-inter);
+}
+
+/* Active Card Bottom Badge */
+.snp-card-badge {
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--snp-color-primary);
+    color: var(--snp-color-text-white);
+    font-family: "inter";
+    font-size: var(--snp-font-size-xs);
+    font-weight: 600;
+    line-height: 14px;
+    padding: 2px 8px;
+    border-radius: var(--snp-radius-button, 6px);
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    box-shadow: none !important;
+    filter: none !important;
+    transition: background-color 0.2s ease;
+}
+
+.snp-card-badge:hover {
+    background-color: var(--snp-color-primary-hover);
+}
+
+/* Total Order Value Card */
+.snp-total-card {
+    background-color: var(--snp-color-pill-bg, var(--snp-color-card-bg));
+    border-radius: var(--snp-radius-container, 16px);
+    padding: 8px 12px;
+    margin-top: 16px;
+}
+
+.snp-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.snp-total-text {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--snp-color-text-muted);
+    line-height: 16px;
+    font-family: 'Inter';
+}
+
+.snp-total-amount {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--snp-color-text-primary);
+}
+
+.snp-total-right {
+    display: flex;
+    align-items: center;
+}
+
+.snp-coupon-row:hover {
+    filter: brightness(0.97);
+    transform: translateY(-0.5px);
+}
+
+.snp-coupon-row:active {
+    transform: translateY(0.5px);
+}
+
+/* coupon apply */
+
+/* total order value chevron */
+.snp-total-chevron {
+    display: block;
+    color: var(--snp-color-text-primary);
+}
+
+/* total order value coupon */
+.snp-coupon-row {
+    background-color: #FDF0F6;
+    border-radius: 6px;
+    padding: 6px 14px;
+    margin-top: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.snp-coupon-row:hover {
+    background-color: #FCE4F0;
+}
+
+/* Features Grid Section */
+.snp-features-grid {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 16px;
+    padding-inline: 40px;
+}
+
+.snp-feature-item {
+    text-align: center;
+    flex: 1;
+}
+
+.snp-feature-line {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--snp-color-text-feature);
+    line-height: 16px;
+    font-family: "Inter", sans-serif;
+}
+
+.snp-feature-divider {
+    width: 1px;
+    height: 32px;
+    background-color: var(--snp-color-divider);
+    margin: 0 4px;
+}
+
+/* Footer Banner */
+.snp-footer {
+    background-color: var(--snp-color-footer-bg);
+    padding: 16px 20px 14px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.snp-footer-brand-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.snp-footer-text {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--snp-color-text-primary);
+    line-height: 20px;
+    font-family: "inter";
+}
+
+.snp-brand-logo-wrapper {
+    background-color: var(--snp-color-extra-off-bg);
+    padding-inline: 5px;
+    border-radius: 3px;
+}
+
+.snp-brand-logo {
+    display: inline-block;
+}
+
+/* WL */
+
+/* credit limit-with sellected payment */
+
+.snp-credit-selected-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.snp-select-payment-banner {
+    background-color: #F1F5F9;
+    width: fit-content;
+    max-width: calc(100% - 40px);
+    margin: 0 auto 14px auto;
+    padding: 6px 16px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    box-sizing: border-box;
+}
+
+.snp-arrow-circle {
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    background-color: var(--snp-color-primary, #FF6F00);
+    color: var(--snp-color-text-white, #FFFFFF);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.snp-arrow-icon {
+    display: block;
+    width: 10px;
+    height: 10px;
+}
+
+.snp-select-payment-text {
+    font-size: 11.5px;
+    font-weight: 700;
+    font-style: italic;
+    color: #151E29;
+    line-height: 16px;
+    font-family: "Inter", var(--snp-font-family, sans-serif);
+}
+
+.snp-dark-credit-box {
+    background-color: #1E2B3B;
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-sizing: border-box;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+}
+
+.snp-dark-credit-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 6px;
+    flex-wrap: nowrap;
+}
+
+.snp-dark-credit-title {
+    font-size: 10px;
+    font-weight: 500;
+    color: #fff;
+    font-family: "inter", var(--snp-font-family);
+    line-height: 14px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.snp-dark-credit-title strong {
+    font-weight: 700;
+}
+
+.snp-dark-badges {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.snp-dark-badge {
+    background-color: #334255;
+    border: 1px solid rgba(226, 232, 240, 0.15);
+    color: #FF6F00;
+    font-size: 7.5px;
+    line-height: 10px;
+    font-weight: 600;
+    padding: 4px 6px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    white-space: nowrap;
+    font-family: "inter", var(--snp-font-family);
+}
+
+.snp-check-limit-btn {
+    width: 100%;
+    height: 40px;
+    background-color: var(--snp-color-primary);
+    color: var(--snp-color-text-white);
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    font-family: "inter", var(--snp-font-family);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.snp-check-limit-btn:hover {
+    opacity: 0.92;
+}
+
+.snp-dark-credit-footer {
+    font-size: 9px;
+    font-weight: 400;
+    color: #E2E8F0;
+    text-align: center;
+    font-family: "inter", var(--snp-font-family);
+    line-height: 12.6px;
+}
+
+.snp-white-brand {
+    color: var(--snp-color-text-white);
+    font-weight: 700;
+}
+
+/* with size */
+
+.snp-select {
+    width: 100%;
+    background-color: var(--snp-color-card-bg);
+    border: 1px solid #CBD5E1;
+    border-radius: 8px;
+    padding: 8px 30px 8px 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #64768B;
+    font-family: var(--snp-font-family);
+    outline: none;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    line-height: 20px;
+    transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.snp-select:focus {
+    border-color: var(--snp-color-primary);
+    color: var(--snp-color-text-primary);
+}
+
+/* personal details */
+
+.snp-btn-chevron {
+    color: var(--snp-color-text-white);
+    flex-shrink: 0;
+}
+
+/* only pay with RBI-regulated */
+.snp-trust-bar {
+    width: 100%;
+    background-color: transparent;
+    padding-inline: 0px;
+    display: var(--snp-rbi-display, flex);
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.snp-trust-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+.snp-trust-icon {
+    display: block;
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+}
+
+.snp-trust-text {
+    font-size: 11px;
+    font-weight: 700;
+    font-style: italic;
+    color: var(--snp-color-rbi-text, #64748b);
+    line-height: 14px;
+    font-family: "Inter", sans-serif;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+}
+
+/* default case */
+.snp-corner-ribbon-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 140px;
+    height: 140px;
+    overflow: hidden;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.snp-corner-ribbon {
+    position: absolute;
+    top: 28px;
+    left: -32px;
+    width: 175px;
+    transform: rotate(-45deg);
+    background: #D1F4FC;
+    padding: 3px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    pointer-events: auto;
+}
+
+.snp-coin-icon {
+    width: 25px;
+    height: 25px;
+    flex-shrink: 0;
+}
+
+.snp-ribbon-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.15;
+}
+
+.snp-ribbon-title {
+    font-size: 9.5px;
+    font-weight: 700;
+    color: #0b1f33;
+    white-space: nowrap;
+    letter-spacing: -0.1px;
+    font-family: "Inter", sans-serif;
+}
+
+.snp-ribbon-sub {
+    font-size: 9.5px;
+    font-weight: 700;
+    color: #0b1f33;
+    white-space: nowrap;
+    letter-spacing: -0.1px;
+    font-family: "Inter", sans-serif;
+}
+
+.snp-ribbon-tnc {
+    font-size: 7px;
+    font-weight: 600;
+    color: #475569;
+    vertical-align: super;
+    margin-left: 1px;
+}
+
+/* default cashback */
+.snp-deal-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background-color: var(--snp-color-deal-bg, #FFF5EA);
+    border-radius: 20px;
+    padding: 3px 10px;
+    margin-bottom: 8px;
+}
+
+.snp-deal-icon {
+    color: var(--snp-color-deal-icon, #CC4F02);
+    flex-shrink: 0;
+}
+
+.snp-deal-text {
+    font-size: 10px;
+    font-weight: 700;
+    font-style: italic;
+    color: var(--snp-color-deal-text, #CC4F02);
+    line-height: 14px;
+    white-space: nowrap;
+    letter-spacing: 0.3px;
+}
+
+/* default cashback */
+.snp-offer-note {
+    font-size: 8px;
+    font-weight: 400;
+    font-style: normal;
+    color: var(--snp-color-offer-note);
+    text-align: center;
+    margin-bottom: 16px;
+    line-height: 10px;
+    font-family: "Inter", sans-serif;
+}
+
+/* default cashback */
+
+/* default cashback */
+.snp-discount-banner {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--snp-color-discount-text);
+    text-align: center;
+    line-height: 20px;
+    margin-top: 10px;
+    font-family: var(--snp-font-family);
+}
+
+.snp-discount-highlight {
+    font-weight: 700;
+    color: var(--snp-color-discount-bold);
+}
+
+/* default extra off */
+.snp-extra-off-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 140px;
+    height: 140px;
+    overflow: hidden;
+    z-index: 6;
+    pointer-events: none;
+}
+
+.snp-extra-off-ribbon {
+    position: absolute;
+    top: 24px;
+    left: -36px;
+    width: 165px;
+    transform: rotate(-45deg);
+    background-color: var(--snp-color-extra-off-bg, #ff5c00);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    padding: 7px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: auto;
+    -webkit-mask-image:
+        radial-gradient(circle 3px at 6px 0, transparent 99%, #000 100%),
+        radial-gradient(circle 3px at 6px 100%, transparent 99%, #000 100%);
+    -webkit-mask-position: top, bottom;
+    -webkit-mask-size: 12px 51%;
+    -webkit-mask-repeat: repeat-x;
+    mask-image:
+        radial-gradient(circle 3px at 6px 0, transparent 99%, #000 100%),
+        radial-gradient(circle 3px at 6px 100%, transparent 99%, #000 100%);
+    mask-position: top, bottom;
+    mask-size: 12px 51%;
+    mask-repeat: repeat-x;
+}
+
+.snp-extra-off-text {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--snp-color-extra-off-text, #ffffff);
+    letter-spacing: 0.6px;
+    white-space: nowrap;
+    text-transform: uppercase;
+    font-family: var(--snp-font-family);
+}
+
+/* ==========================================================================
+   Terms & Conditions Screen
+   ========================================================================== */
+
+/* Top Bar : Back + Logo + Close */
+
+.snp-tnc-back-icon,
+
+/* Brand Logo */
+
+/* Heading Section */
+
+/* Terms List */
+
+/* ==========================================================================
+   Product Details Screen
+   ========================================================================== */
+
+/* Header : Title + Close */
+
+/* Product List */
+
+/* Product Thumbnail */
+
+/* Product Info */
+
+/* Price Summary */
+
+/* Coupon Applied Row */
+
+/* Total Order Value */
+
+/* ==========================================================================
+   coupons css
+   ========================================================================== */
+
+/* Top Bar : Back + Title + Close */
+
+/* Price Summary */
+
+/* Applied Coupon Summary Row */
+
+/* Total Order Value Row */
+
+/* Coupon Code Entry */
+
+/* Coupon List */
+
+/* Single Coupon Card */
+
+/* ==========================================================================
+   Multi-Plan Specific Styles
+   ========================================================================== */
+.snp-rest-subtitle {
+    font-size: var(--snp-font-size-lg);
+    font-weight: 500;
+    color: var(--snp-color-text-secondary);
+    line-height: 22px;
+    font-family: var(--snp-font-family);
+}
+
+.snp-options-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--snp-color-text-primary);
+    font-family: "inter";
+    text-align: center;
+    line-height: 20px;
+    margin-bottom: 12px;
+}
+
+.snp-card-col {
+    flex: 1 1 0px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.snp-card-col .snp-card {
+    width: 100%;
+}
+
+.snp-option-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--snp-color-text-muted);
+    font-family: var(--snp-font-inter);
+    margin-bottom: 14px;
+    text-align: center;
+    line-height: 16px;
+}
+
+.snp-card-badge-top {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--snp-color-primary);
+    color: var(--snp-color-text-white);
+    font-family: var(--snp-font-inter);
+    font-size: var(--snp-font-size-xs);
+    font-weight: 600;
+    line-height: 14px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: none;
+    white-space: nowrap;
+    box-shadow: none !important;
+    filter: none !important;
+}
+
+.snp-card-divider {
+    width: 100%;
+    height: 1px;
+    background-color: var(--snp-color-divider);
+    margin-top: 10px;
+    margin-bottom: 8px;
+}
+
+.snp-card-duration {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--snp-color-text-muted);
+    font-family: var(--snp-font-inter);
+    line-height: 16px;
+}
+
+.snp-card-single {
+    max-width: 160px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+/* ==========================================================================
+   Responsive Styles for Screens <= 575px (Mobile Viewports)
+   ========================================================================== */
+@media screen and (max-width: 575px) {
+    .snp-modal {
+        max-width: 100%;
+        border-radius: 14px;
+    }
+
+    .snp-close-btn {
+        top: 16px;
+        right: 16px;
+    }
+
+    /* Header Section */
+    .snp-header {
+        padding-top: 18px;
+        padding-bottom: 8px;
+    }
+
+    .snp-subtitle {
+        font-size: 14px;
+        line-height: 18px;
+    }
+
+    .snp-amount-highlight {
+        font-size: 26px;
+        line-height: 32px;
+    }
+
+    /* Inner Box & Cards */
+    .snp-inner-box {
+        margin: 0 16px 12px 16px;
+        padding: 12px;
+        border-radius: 16px;
+    }
+
+    .snp-cards-grid {
+        gap: 8px;
+    }
+
+    .snp-card {
+        padding-top: 12px;
+        padding-bottom: 6px;
+    }
+
+    .snp-pie-container {
+        height: 42px;
+        width: 42px;
+        margin-bottom: 4px;
+    }
+
+    .snp-pie-container svg {
+        width: 42px;
+        height: 42px;
+    }
+
+    .snp-card-price {
+        font-size: 16px;
+        line-height: 22px;
+    }
+
+    .snp-card-label {
+        font-size: 10px;
+        line-height: 13px;
+    }
+
+    .snp-card-badge {
+        font-size: 9px;
+        line-height: 12px;
+        padding: 2px 6px;
+        bottom: -9px;
+    }
+
+    /* Order Value & Coupons */
+    .snp-total-card {
+        padding: 8px 10px;
+        margin-top: 12px;
+    }
+
+    .snp-total-text,
+    .snp-subtotal-text,
+    .snp-coupon-code,
+
+    .snp-total-amount {
+        font-size: 15px;
+    }
+
+    .snp-subtotal-amount,
+
+    .snp-coupon-row {
+        padding: 5px 10px;
+    }
+
+    /* Features Grid & Footer */
+    .snp-features-grid {
+        padding-inline: 16px;
+        padding-bottom: 12px;
+    }
+
+    .snp-feature-line {
+        font-size: 11px;
+        line-height: 14px;
+    }
+
+    .snp-footer {
+        padding: 12px 16px;
+    }
+
+    .snp-footer-text {
+        font-size: 13px;
+        line-height: 18px;
+    }
+
+    /* Payment Selection & Banners */
+
+    .snp-select-payment-banner {
+        width: fit-content;
+        max-width: calc(100% - 28px);
+        margin: 0 auto 10px auto;
+        padding: 5px 12px;
+    }
+
+    .snp-select-payment-text {
+        font-size: 11px;
+        line-height: 15px;
+    }
+
+    .snp-dark-credit-box {
+        padding: 14px 16px;
+        gap: 10px;
+    }
+
+    .snp-dark-credit-title {
+        font-size: 10px;
+        line-height: 13px;
+    }
+
+    .snp-check-limit-btn {
+        height: 38px;
+        font-size: 13px;
+        line-height: 18px;
+    }
+
+    /* Size Section & Forms */
+    .snp-size-section,
+
+    .snp-size-label,
+
+    .snp-size-select-row,
+
+    .snp-select,
+    .snp-input,
+
+    .snp-size-buy-btn,
+
+    .snp-trust-bar {
+        padding-inline: 0;
+        padding-bottom: 0;
+    }
+
+    .snp-trust-text {
+        font-size: 10px;
+        line-height: 13px;
+    }
+
+    .snp-merchant-text,
+    .snp-discount-banner {
+        font-size: 13px;
+        line-height: 18px;
+    }
+
+    /* Terms & Conditions Modal */
+
+    .snp-tnc-topbar,
+
+    /* Product Details Modal */
+
+    .snp-pd-name,
+    .snp-pd-price,
+
+    .snp-pd-meta-text,
+    .snp-pd-meta-divider,
+    .snp-pd-qty,
+
+    /* Coupons Modal */
+
+    .snp-cpn-summary-label,
+
+    .snp-cpn-summary-value,
+
+    .snp-cpn-code,
+
+    .snp-cpn-status-text,
+    .snp-cpn-card-desc,
+
+    /* Multi-Plan Specific */
+    .snp-rest-subtitle {
+        font-size: 14px;
+        line-height: 18px;
+    }
+
+    .snp-options-title {
+        font-size: 13px;
+        line-height: 18px;
+        margin-bottom: 8px;
+    }
+
+    .snp-option-label {
+        font-size: 11px;
+        line-height: 15px;
+        margin-bottom: 10px;
+    }
+
+    .snp-card-badge-top {
+        font-size: 9px;
+        line-height: 12px;
+        padding: 2px 6px;
+        top: -9px;
+    }
+
+}
+
+/* Antigravity IDE Modal Overlay for in-app preview */
+.snp-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 16px;
+    overflow-y: auto;
+}
+
+.snp-express-input::placeholder {
+    color: var(--snp-color-field-placeholder, #334255);
+    font-style: italic;
+    opacity: 1;
+}
+
+.snp-express-input {
+    font-style: italic;
+}
+
+.snp-express-select {
+    font-style: italic;
+}
+
+.snp-express-btn {
+    font-weight: 700;
+    font-style: italic;
+    border-radius: var(--snp-radius-button, 8px);
+}
+
+/* ── Select Element Inspector ── */
+.snp-select-mode [data-snp-el] {
+    cursor: crosshair !important;
+    position: relative;
+    transition: box-shadow 0.12s ease;
+}
+
+.snp-select-mode [data-snp-el].snp-el-hover {
+    outline: none !important;
+    box-shadow: 0 0 0 1px rgba(81, 52, 135, 0.35) !important;
+}
+
+.snp-select-mode [data-snp-el].snp-el-selected {
+    outline: none !important;
+    box-shadow: 0 0 0 1px #513487 !important;
+}

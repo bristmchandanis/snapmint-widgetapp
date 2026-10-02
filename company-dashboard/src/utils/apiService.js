@@ -126,13 +126,29 @@ const ApiService = () => {
 
     deleteCashbackOffer: async (id) => await deleteData(`/cashback-offer/delete/${id}`),
 
+    // Coupons Management
+    getCoupons: async (params = {}) => {
+      const query = new URLSearchParams(params).toString();
+      return await getData(`/coupon${query ? `?${query}` : ''}`);
+    },
+
+    validateAndAddCoupon: async (data) => await postData('/coupon/validate-and-add', data),
+
+    toggleCouponSelectable: async (id, isSelectable) => await patchData(`/coupon/${id}/toggle`, { isSelectable }),
+
     // Store Colors (Shop Table & Metafields)
     getStoreColors: async (shopId) => await getData(`/shop/color-customization/get?shopId=${encodeURIComponent(shopId)}`),
 
     saveStoreColors: async (data) => await postData('/shop/color-customization/save', data),
 
     // Widget Customization (Company Dashboard)
-    getWidgetCustomization: async (id) => await getData(`/widget-customization/get?id=${encodeURIComponent(id)}`),
+    getWidgetCustomization: async (params) => {
+      if (typeof params === 'object' && params !== null) {
+        const query = new URLSearchParams(params).toString();
+        return await getData(`/widget-customization/get?${query}`);
+      }
+      return await getData(`/widget-customization/get?id=${encodeURIComponent(params || '')}`);
+    },
 
     getWidgetCustomizationsList: async () => await getData('/widget-customization/list'),
 
@@ -146,8 +162,21 @@ const ApiService = () => {
       ? putData('/widget-customization/update', data)
       : postData('/widget-customization/add', data),
 
-    // Auto Setup Selectors
-    getAutoSetup: async (shopId) => await getData(`/auto-setup/get?shopId=${encodeURIComponent(shopId)}`),
+    // Widget targeting (replaces deprecated autoSetup)
+    getAutoSetup: async (shopId) => {
+      const res = await getData(`/widget-customization/get?shopId=${encodeURIComponent(shopId)}`);
+      if (res?.success) {
+        const targeting = res.data?.customization?.targeting || res.widget?.targeting || {};
+        return { success: true, data: targeting };
+      }
+      return res;
+    },
+
+    updateAutoSetup: async (data) => await postData('/widget-customization/add', {
+      shopId: data?.shopId,
+      shopDomain: data?.shopDomain || data?.myshopifyDomain,
+      targeting: data,
+    }),
 
     // Merchant Credentials
     getMerchantCredentials: async () => await getData('/merchant-credentials/list'),
