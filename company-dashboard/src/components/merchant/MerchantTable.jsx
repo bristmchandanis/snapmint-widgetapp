@@ -122,9 +122,12 @@ export default function MerchantTable({
                         Plans
                       </Link>
 
-                      <span className="text-xs font-semibold text-gray-800 underline underline-offset-4 cursor-pointer">
+                      <Link
+                        to={`${appRoutesURL.merchantOnboard}/${merchant.id}?step=6`}
+                        className="text-xs font-semibold text-gray-800 underline underline-offset-4 cursor-pointer hover:text-black transition-colors"
+                      >
                         Coupons
-                      </span>
+                      </Link>
                     </div>
                   </TableCell>
                 </TableRow>

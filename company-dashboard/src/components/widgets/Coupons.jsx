@@ -325,7 +325,7 @@ export default function Coupons({
             type="button"
             variant="outline"
             onClick={onBack}
-            className="rounded-lg h-10 px-4 border-gray-200 text-gray-800 font-semibold text-xs hover:bg-gray-50 cursor-pointer flex items-center gap-1.5 shadow-2xs"
+            className="rounded-md h-9 px-4 border-gray-200 text-gray-800 font-semibold text-xs hover:bg-gray-50 cursor-pointer flex items-center gap-1.5 shadow-xs"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Customisation</span>
@@ -338,7 +338,7 @@ export default function Coupons({
         <Button
           type="button"
           onClick={() => onContinue && onContinue({ coupons })}
-          className="rounded-lg h-10 px-6 bg-[#111827] hover:bg-[#000000] text-white font-semibold text-xs sm:text-sm cursor-pointer flex items-center gap-1.5 shadow-2xs transition-all"
+          className="rounded-md h-9 px-5 bg-black hover:bg-gray-800 text-white font-bold text-xs cursor-pointer flex items-center gap-1.5 shadow-xs transition-all"
         >
           <span>Next: Targeting</span>
           <ArrowRight className="w-4 h-4 text-white" />

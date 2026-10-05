@@ -29,17 +29,50 @@ export const merchantSchema = z.object({
   brandingMode: z.string().optional(),
 });
 
-export const validateMerchantForm = (data) => {
+export const validateMerchantForm = (data, existingMerchants = [], currentId = null) => {
   const normalizedData = {
     ...data,
     shop: cleanShopDomain(data.shop || ''),
   };
-  return validateForm(merchantSchema, normalizedData);
+  const result = validateForm(merchantSchema, normalizedData);
+  if (!result.isValid) return result;
+
+  const isDuplicate = existingMerchants?.some((m) => {
+    const mShop = cleanShopDomain(m.shop || m.myshopifyDomain || '');
+    const mId = m.id || m._id;
+    const curId = currentId || data.id;
+    return mShop === normalizedData.shop && (!curId || String(mId) !== String(curId));
+  });
+
+  if (isDuplicate) {
+    return {
+      isValid: false,
+      errors: {
+        ...result.errors,
+        shop: 'This Shopify store URL is already registered. Please enter a unique URL.',
+      },
+    };
+  }
+
+  return result;
 };
 
-export const validateMerchantField = (fieldName, value) => {
+export const validateMerchantField = (fieldName, value, existingMerchants = [], currentId = null) => {
   if (fieldName === 'shop') {
-    value = cleanShopDomain(value);
+    const cleaned = cleanShopDomain(value);
+    const err = validateField(merchantSchema, fieldName, cleaned);
+    if (err) return err;
+
+    const isDuplicate = existingMerchants?.some((m) => {
+      const mShop = cleanShopDomain(m.shop || m.myshopifyDomain || '');
+      const mId = m.id || m._id;
+      return mShop === cleaned && (!currentId || String(mId) !== String(currentId));
+    });
+
+    if (isDuplicate) {
+      return 'This Shopify store URL is already registered. Please enter a unique URL.';
+    }
+    return null;
   }
   return validateField(merchantSchema, fieldName, value);
 };

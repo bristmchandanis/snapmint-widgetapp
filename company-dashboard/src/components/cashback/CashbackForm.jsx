@@ -7,7 +7,6 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { IconArrowLeft, IconSpinner } from '../common/Icons';
 import SimpleSelect from '../common/SimpleSelect';
-import StepStoreSelection from '../widget/steps/StepStoreSelection';
 import Stepper from '../common/Stepper';
 import StepNavigation from '../common/StepNavigation';
 import RichTextEditor from '../common/RichTextEditor';
@@ -166,7 +165,7 @@ export default function CashbackFormPage({
                                     : (formData[field.key] ?? '');
                                 const fieldErr = errors[field.key];
 
-                                 return (
+                                return (
                                     <div key={field.key} className="space-y-1">
                                         <Label htmlFor={field.key} className="font-semibold text-gray-800 text-xs block">
                                             {field.label} {field.required && <span className="text-red-500 ml-0.5">*</span>}

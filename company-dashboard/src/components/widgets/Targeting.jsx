@@ -164,11 +164,10 @@ export default function Targeting({
                 <TabsTrigger
                   key={tab}
                   value={tab}
-                  className={`px-5 py-1.5 text-xs font-semibold rounded-md transition-all ${
-                    isActive
-                      ? 'bg-black text-white border-black hover:bg-black hover:text-white shadow-xs'
-                      : 'text-gray-500 hover:text-gray-900 hover:bg-gray-200/60 border-transparent'
-                  }`}
+                  className={`px-5 py-1.5 text-xs font-semibold rounded-md transition-all ${isActive
+                    ? 'bg-black text-white border-black hover:bg-black hover:text-white shadow-xs'
+                    : 'text-gray-500 hover:text-gray-900 hover:bg-gray-200/60 border-transparent'
+                    }`}
                 >
                   {tab}
                 </TabsTrigger>
@@ -236,7 +235,7 @@ export default function Targeting({
               type="button"
               variant="outline"
               onClick={onBack}
-              className="rounded-lg h-9 px-3.5 border-gray-200 text-gray-700 font-semibold text-xs hover:bg-gray-50 cursor-pointer flex items-center gap-1.5"
+              className="rounded-md h-9 px-4 border-gray-200 text-gray-700 font-semibold text-xs hover:bg-gray-50 cursor-pointer flex items-center gap-1.5 shadow-xs"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Back to Coupons</span>
@@ -248,7 +247,7 @@ export default function Targeting({
           type="button"
           disabled={saving}
           onClick={handleSave}
-          className="rounded-lg h-10 px-6 bg-[#111827] hover:bg-[#000000] text-white font-semibold text-xs cursor-pointer shadow-2xs transition-all disabled:opacity-50"
+          className="rounded-md h-9 px-5 bg-black hover:bg-gray-800 text-white font-bold text-xs cursor-pointer shadow-xs transition-all disabled:opacity-50"
         >
           {saving ? 'Saving' : 'Save targeting'}
         </Button>

@@ -56,7 +56,7 @@ const MERCHANT_FIELDS = [
   },
 ];
 
-export default function AddMerchant({ onSuccess, disabled = false, initialData = {}, isEdit = false }) {
+export default function AddMerchant({ onSuccess, disabled = false, initialData = {}, isEdit = false, existingMerchants = [] }) {
   const [formData, setFormData] = useState(() => ({
     name: initialData.name || '',
     merchantId: initialData.merchantId || '',
@@ -75,7 +75,7 @@ export default function AddMerchant({ onSuccess, disabled = false, initialData =
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const validation = validateMerchantForm(formData);
+    const validation = validateMerchantForm(formData, existingMerchants, initialData?.id);
     if (!validation.isValid) {
       setErrors(validation.errors);
       return;
