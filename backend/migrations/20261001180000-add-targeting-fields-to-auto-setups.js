@@ -4,6 +4,9 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     try {
+      if (!(await queryInterface.tableExists('auto_setups'))) {
+        return;
+      }
       const tableDescription = await queryInterface.describeTable('auto_setups');
 
       if (!tableDescription.pdpFallbackSelector) {

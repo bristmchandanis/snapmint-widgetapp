@@ -31,9 +31,8 @@ app.use("/api", routes);
 app.use("/api/webhooks", webhookRoutes);
 sequelize
   .authenticate()
-  .then(async () => {
+  .then(() => {
     console.log("PostgreSQL connection established successfully.");
-    await sequelize.query("DROP TABLE IF EXISTS auto_setups CASCADE;").catch(() => {});
     return sequelize.sync();
   })
   .then(() => {
