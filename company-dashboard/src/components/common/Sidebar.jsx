@@ -1,7 +1,6 @@
 import {
   IconDashboard,
   IconPlusCircle,
-  IconLayers,
   IconTag,
   IconBarChart,
   IconLogOut,
@@ -28,16 +27,9 @@ export default function Sidebar({ onNavigate, user, onLogout, mobileOpen, onMobi
     {
       id: 'merchant-onboard',
       moduleName: 'merchantOnboard',
-      label: 'Merchant Onboarding',
+      label: 'All Merchants',
       icon: IconPlusCircle,
       path: appRoutesURL.merchantOnboard,
-    },
-    {
-      id: 'widget-customization',
-      moduleName: 'widgetCustomization',
-      label: 'Widget Customization',
-      icon: IconLayers,
-      path: appRoutesURL.widgetCustomization,
     },
     {
       id: 'cashback-offer',

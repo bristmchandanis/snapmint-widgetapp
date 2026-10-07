@@ -8,12 +8,9 @@ import { appRoutesURL } from './routes/appRoutesURL';
 
 const Login = lazy(() => import('./pages/Login'));
 const Stores = lazy(() => import('./pages/Stores'));
-const MerchantOnboard = lazy(() => import('./pages/MerchantOnboard'));
-const WidgetCustomization = lazy(() => import('./pages/WidgetCustomization'));
+const AllMerchants = lazy(() => import('./pages/AllMerchants'));
 const Analytics = lazy(() => import('./pages/Analytics'));
 const Profile = lazy(() => import('./pages/Profile'));
-const AutoSetupPage = lazy(() => import('./pages/AutoSetupPage'));
-const ColorCustomization = lazy(() => import('./pages/ColorCustomization'));
 const CashbackOffer = lazy(() => import('./pages/CashbackOffer'));
 
 const getUser = () => { try { return JSON.parse(localStorage.getItem('user')); } catch { return null; } };
@@ -78,22 +75,21 @@ export default function App() {
           <Route element={isAuth ? <DashboardLayout user={user} onLogout={handleLogout} onUserRoleUpdated={saveUser} /> : <Navigate to={appRoutesURL.login} replace />}>
             <Route index element={<Navigate to={appRoutesURL.stores} replace />} />
             <Route path="stores" element={<Stores user={user} />} />
-            <Route path="merchant-onboard/create" element={<MerchantOnboard user={user} mode="create" />} />
-            <Route path="merchant-onboard/edit/:editId" element={<MerchantOnboard user={user} mode="edit" />} />
-            <Route path="merchant-onboard/delete/:deleteId" element={<MerchantOnboard user={user} mode="delete" />} />
-            <Route path="merchant-onboard" element={<MerchantOnboard user={user} />} />
-            <Route path="widget-customization/create/:masterTemplateId" element={<WidgetCustomization user={user} mode="create" />} />
-            <Route path="widget-customization/create" element={<WidgetCustomization user={user} mode="create" />} />
-            <Route path="widget-customization/edit/:id" element={<WidgetCustomization user={user} mode="edit" />} />
-            <Route path="widget-customization/delete/:deleteId" element={<WidgetCustomization user={user} mode="delete" />} />
-            <Route path="widget-customization" element={<WidgetCustomization user={user} />} />
+            <Route path="merchant-onboard/create/:step" element={<AllMerchants user={user} mode="create" />} />
+            <Route path="merchant-onboard/create" element={<AllMerchants user={user} mode="create" />} />
+            <Route path="merchant-onboard/edit/:editId" element={<AllMerchants user={user} mode="edit" />} />
+            <Route path="merchant-onboard/:merchantId" element={<AllMerchants user={user} mode="details" />} />
+            <Route path="merchant-onboard" element={<AllMerchants user={user} />} />
+            <Route path="widget-customization/*" element={<Navigate to={appRoutesURL.merchantOnboard} replace />} />
+            <Route path="widget-customization" element={<Navigate to={appRoutesURL.merchantOnboard} replace />} />
             <Route path="cashback-offer/create" element={<CashbackOffer user={user} mode="create" />} />
             <Route path="cashback-offer/edit/:id" element={<CashbackOffer user={user} mode="edit" />} />
             <Route path="cashback-offer" element={<CashbackOffer user={user} />} />
             <Route path="activity-logs" element={<Analytics user={user} />} />
-            <Route path="auto-setup/edit/:shopId" element={<AutoSetupPage user={user} />} />
-            <Route path="auto-setup" element={<AutoSetupPage user={user} />} />
-            <Route path="color-customization/edit/:shopId" element={<ColorCustomization user={user} />} />
+            <Route path="auto-setup/*" element={<Navigate to={appRoutesURL.stores} replace />} />
+            <Route path="auto-setup" element={<Navigate to={appRoutesURL.stores} replace />} />
+            <Route path="color-customization/*" element={<Navigate to={appRoutesURL.stores} replace />} />
+            <Route path="color-customization" element={<Navigate to={appRoutesURL.stores} replace />} />
             <Route path="profile" element={<Profile currentUser={user} onUserRoleUpdated={saveUser} />} />
             <Route path="*" element={<Navigate to={appRoutesURL.stores} replace />} />
           </Route>

@@ -7,9 +7,9 @@ const webhookRoutes = require("./modules/webhook");
 require("./modules/appstation/model");
 require("./modules/merchantCredential/model");
 require("./modules/widgetCustomization/model");
-require("./modules/autoSetup/model");
 require("./modules/activityLog/model");
 require("./modules/cashbackOffer/model");
+require("./modules/coupon/model");
 
 const app = express();
 const PORT = process.env.PORT || 5000;

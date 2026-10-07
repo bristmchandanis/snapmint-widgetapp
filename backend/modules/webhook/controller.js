@@ -7,6 +7,8 @@ const {
 const { APP_INSTALL, SEQUELIZE_OP } = require("../../config/constants");
 const Shop = require("../shop/model");
 const MerchantCredential = require("../merchantCredential/model");
+const Coupon = require("../coupon/model");
+const { findShopRecord } = require("../../utils/shopHelper");
 
 exports.handleAppUninstalled = async (req, res) => {
   try {
@@ -107,3 +109,89 @@ exports.shopUpdate = async (req, res) => {
     return res.status(200).send({ message: "ok" });
   }
 };
+
+exports.handleDiscountCreateOrUpdate = async (req, res) => {
+  try {
+    const rawDomain = req.headers["x-shopify-shop-domain"];
+    const payload = Buffer.isBuffer(req.body)
+      ? JSON.parse(req.body.toString("utf8"))
+      : typeof req.body === "string"
+        ? JSON.parse(req.body)
+        : req.body;
+
+    const targetShop = await findShopRecord(null, rawDomain);
+    const code = (payload?.code || payload?.title || "").trim().toUpperCase();
+
+    if (targetShop && code) {
+      const endsAt = payload.ends_at ? new Date(payload.ends_at) : null;
+      const isExpired = (endsAt && endsAt <= new Date()) || String(payload.status).toUpperCase() === "EXPIRED";
+
+      const couponData = {
+        title: payload.title || code,
+        status: isExpired ? "EXPIRED" : (payload.status ? String(payload.status).toUpperCase() : "ACTIVE"),
+        startsAt: payload.starts_at ? new Date(payload.starts_at) : null,
+        endsAt,
+        shopifyDiscountId: payload.id ? String(payload.id) : null,
+        needsRecheck: true,
+        ...(isExpired ? { isSelectable: false } : {}),
+      };
+
+      let coupon = await Coupon.findOne({
+        where: {
+          shopId: targetShop.id,
+          [SEQUELIZE_OP.or]: [
+            ...(code ? [{ code }] : []),
+            ...(payload?.id ? [{ shopifyDiscountId: String(payload.id) }] : []),
+          ],
+        },
+      });
+
+      if (coupon) {
+        await coupon.update(couponData);
+      } else {
+        await Coupon.create({
+          ...couponData,
+          shopId: targetShop.id,
+          myshopifyDomain: targetShop.myshopifyDomain,
+          code: code || `DISCOUNT-${payload.id}`,
+          isSelectable: false,
+          source: "Synced from Shopify",
+        });
+      }
+    }
+  } catch (error) {
+    console.error("Error processing discount webhook:", error);
+  }
+  return res.status(200).send({ message: "ok" });
+};
+
+exports.handleDiscountDelete = async (req, res) => {
+  try {
+    const rawDomain = req.headers["x-shopify-shop-domain"];
+    const payload = Buffer.isBuffer(req.body)
+      ? JSON.parse(req.body.toString("utf8"))
+      : typeof req.body === "string"
+        ? JSON.parse(req.body)
+        : req.body;
+
+    const targetShop = await findShopRecord(null, rawDomain);
+
+    if (targetShop && (payload?.id || payload?.code)) {
+      await Coupon.update(
+        { status: "EXPIRED", isSelectable: false, needsRecheck: true },
+        {
+          where: {
+            shopId: targetShop.id,
+            ...(payload.code
+              ? { code: String(payload.code).toUpperCase() }
+              : { shopifyDiscountId: String(payload.id) }),
+          },
+        }
+      );
+    }
+  } catch (error) {
+    console.error("Error processing discount delete webhook:", error);
+  }
+  return res.status(200).send({ message: "ok" });
+};
+

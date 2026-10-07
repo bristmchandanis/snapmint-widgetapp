@@ -28,48 +28,63 @@ const findShopByDomainOrHandle = async (shopStr) => {
 
 const addMerchantCredential = async (req, res) => {
   try {
-    const { shop, merchantId, mid, token } = req.body;
+    const { shop, merchantId, mid, token, name, brandingMode } = req.body;
     const targetMerchantId = merchantId || mid;
 
-    if (!shop || !targetMerchantId || !token) {
+    if (!shop || !targetMerchantId) {
       return res.status(400).json({
         success: false,
-        message: 'Shop, Merchant ID, and Token are required.',
+        message: 'Shop and Merchant ID are required.',
       });
     }
 
     const cleanShop = sanitizeString(shop);
-    const handle = cleanShop.split('.')[0];
     const cleanMerchantId = String(targetMerchantId).trim();
-    const cleanToken = String(token).trim();
+    const cleanToken = token ? String(token).trim() : null;
 
     const shopRow = await findShopByDomainOrHandle(cleanShop);
     const currentInstallStatus = shopRow && String(shopRow.appInstall) === APP_INSTALL.INSTALLED ? APP_INSTALL.INSTALLED : APP_INSTALL.UNINSTALLED;
 
-    const [merchant, created] = await MerchantCredential.findOrCreate({
-      where: { shop: cleanShop },
-      defaults: {
-        shop: cleanShop,
-        merchantId: cleanMerchantId,
-        token: cleanToken,
-        appInstall: currentInstallStatus,
-        createdBy: req.user?.id || null,
-      },
-    });
+    const existing = await MerchantCredential.findOne({ where: { shop: cleanShop } });
+    const isUpdate = Boolean(req.body.id || req.method === 'PUT');
 
-    if (!created) {
+    if (existing && (!isUpdate || String(existing.id) !== String(req.body.id))) {
+      return res.status(409).json({
+        success: false,
+        message: 'This Shopify store URL is already registered. Please enter a unique URL.',
+      });
+    }
+
+    let merchant;
+    let created = false;
+
+    if (existing && isUpdate) {
+      merchant = existing;
       await merchant.update({
         merchantId: cleanMerchantId,
-        token: cleanToken,
+        ...(cleanToken !== undefined && { token: cleanToken }),
+        name: name ? String(name).trim() : merchant.name,
+        brandingMode: brandingMode || 'snapmint',
         appInstall: currentInstallStatus,
         ...(req.user?.id && { createdBy: req.user.id }),
       });
+    } else {
+      merchant = await MerchantCredential.create({
+        shop: cleanShop,
+        merchantId: cleanMerchantId,
+        token: cleanToken,
+        name: name ? String(name).trim() : null,
+        brandingMode: brandingMode || 'snapmint',
+        appInstall: currentInstallStatus,
+        createdBy: req.user?.id || null,
+      });
+      created = true;
     }
 
     if (shopRow) {
       await shopRow.update({
         merchantId: cleanMerchantId,
-        merchantToken: cleanToken,
+        ...(cleanToken && { merchantToken: cleanToken }),
         onboardStatus: ONBOARD_STATUS.APPROVED,
         widgetStatus: WIDGET_STATUS.ENABLED,
         appStatus: APP_STATUS.ENABLED,
@@ -177,7 +192,7 @@ const deleteMerchantCredential = async (req, res) => {
       if (shopRow.token) {
         getGraphQLClient({ shopDomain: shopRow.myshopifyDomain, accessToken: shopRow.token })
           .then(({ graphqlClient }) => syncSnapmintMetafield(graphqlClient, null, false))
-          .catch(() => {});
+          .catch(() => { });
       }
     }
 

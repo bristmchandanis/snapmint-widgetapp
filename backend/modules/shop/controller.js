@@ -22,7 +22,7 @@ const {
 } = require("./graphqlQuery");
 const Shop = require("./model");
 const MerchantCredential = require("../merchantCredential/model");
-const { syncSnapmintMetafield, syncStoreColorsMetafieldsAsync } = require("../../utils/snapmint");
+const { syncSnapmintMetafield } = require("../../utils/snapmint");
 const { findShopRecord } = require("../../utils/shopHelper");
 
 exports.getShopDetails = async (req, res) => {
@@ -182,7 +182,6 @@ exports.getShopDetails = async (req, res) => {
         activeMerchantToken,
         isWidgetEnabled,
       );
-      await syncStoreColorsMetafieldsAsync(shop, shop.colorConfig || {});
       logActivity('SHOPIFY_APP_INSTALLED', {
         req,
         shopDomain,
@@ -224,7 +223,7 @@ exports.getShopDetails = async (req, res) => {
     });
   } catch (error) {
     console.error("[ShopDetails] Error:", error.message);
-    return errorResponse(res, 401, "Invalid session token.", error);
+    return errorResponse(res, 401, error.message || "Invalid session token.", error);
   }
 };
 
@@ -361,9 +360,6 @@ exports.saveStoreColors = async (req, res) => {
 
     // Save JSON colorConfig column on Shop table
     await shop.update({ colorConfig });
-
-    // Sync Metafield 1 (inner_layout_colors) and Metafield 2 (master_popup_colors) to Shopify
-    await syncStoreColorsMetafieldsAsync(shop, colorConfig);
 
     logActivity('STORE_COLORS_SAVED', { req, shop });
 
