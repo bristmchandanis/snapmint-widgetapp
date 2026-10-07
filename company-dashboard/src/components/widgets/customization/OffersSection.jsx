@@ -20,7 +20,7 @@ function ColorRow({ label, value, onChange }) {
   return (
     <div className="flex items-center justify-between text-xs">
       <span className="text-gray-600">{label}</span>
-      <ColorInput value={value} onChange={onChange} />
+      <ColorInput className="space-y-0" value={value} onChange={onChange} />
     </div>
   );
 }
@@ -56,12 +56,12 @@ const OffersSection = memo(function OffersSection({
       </div>
 
       {isOpen && offers.enabled && (
-        <div className="space-y-4 mt-3">
+        <div className="space-y-3 mt-3">
           <div className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Appearance</div>
 
           {/* 1. Offer Ribbon */}
-          <div className="border border-gray-100 rounded-md p-3 space-y-2.5">
-            <label className="flex items-center gap-2 cursor-pointer mb-1">
+          <div className="border border-gray-100 rounded-md p-2.5 space-y-1.5">
+            <label className="flex items-center gap-2 cursor-pointer mb-0.5">
               <input
                 type="checkbox"
                 checked={Boolean(offers.offerRibbon)}
@@ -83,8 +83,8 @@ const OffersSection = memo(function OffersSection({
           </div>
 
           {/* 2. Offer Text */}
-          <div className="border border-gray-100 rounded-md p-3 space-y-2.5">
-            <label className="flex items-center gap-2 cursor-pointer mb-1">
+          <div className="border border-gray-100 rounded-md p-2.5 space-y-1.5">
+            <label className="flex items-center gap-2 cursor-pointer mb-0.5">
               <input
                 type="checkbox"
                 checked={Boolean(offers.offerText)}
@@ -104,7 +104,7 @@ const OffersSection = memo(function OffersSection({
           </div>
 
           {/* 3. Limited Time Deal Tag */}
-          <div className="space-y-2.5">
+          <div className="space-y-1.5">
             <div className="flex items-center justify-between">
               <span className="text-xs text-gray-700 font-medium">Limited time deal tag</span>
               <input
@@ -127,7 +127,7 @@ const OffersSection = memo(function OffersSection({
           </div>
 
           {/* 4. Offer Note */}
-          <div className="space-y-2.5">
+          <div className="space-y-1.5">
             <div className="flex items-center justify-between">
               <span className="text-xs text-gray-700 font-medium">Offer note</span>
               <input
@@ -139,7 +139,7 @@ const OffersSection = memo(function OffersSection({
             </div>
 
             {offers.offerNote && (
-              <div className="space-y-2.5">
+              <div className="space-y-1.5">
                 <ColorRow
                   label="Offer note colour"
                   value={offers.offerNoteColour || '#64768B'}

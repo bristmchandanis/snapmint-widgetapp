@@ -42,8 +42,8 @@ const RbiSection = memo(function RbiSection({
       </div>
 
       {isOpen && rbi.enabled && (
-        <div className="space-y-3 mt-3">
-          <p className="text-[11px] text-gray-400 leading-relaxed">
+        <div className="space-y-1.5 mt-3">
+          <p className="text-[11px] text-gray-400 leading-relaxed mb-1">
             Show the trust row from your pop-up design.
           </p>
 
@@ -51,6 +51,7 @@ const RbiSection = memo(function RbiSection({
             <div key={key} className="flex items-center justify-between text-xs">
               <span className="text-gray-700 font-medium">{label}</span>
               <ColorInput
+                className="space-y-0"
                 value={rbi[key]}
                 onChange={(val) => updateRbiColor(key, val)}
               />

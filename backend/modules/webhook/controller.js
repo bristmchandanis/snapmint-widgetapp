@@ -116,23 +116,34 @@ exports.handleDiscountCreateOrUpdate = async (req, res) => {
     const payload = Buffer.isBuffer(req.body)
       ? JSON.parse(req.body.toString("utf8"))
       : typeof req.body === "string"
-      ? JSON.parse(req.body)
-      : req.body;
+        ? JSON.parse(req.body)
+        : req.body;
 
     const targetShop = await findShopRecord(null, rawDomain);
     const code = (payload?.code || payload?.title || "").trim().toUpperCase();
 
     if (targetShop && code) {
+      const endsAt = payload.ends_at ? new Date(payload.ends_at) : null;
+      const isExpired = (endsAt && endsAt <= new Date()) || String(payload.status).toUpperCase() === "EXPIRED";
+
       const couponData = {
         title: payload.title || code,
-        status: payload.status ? String(payload.status).toUpperCase() : "ACTIVE",
+        status: isExpired ? "EXPIRED" : (payload.status ? String(payload.status).toUpperCase() : "ACTIVE"),
         startsAt: payload.starts_at ? new Date(payload.starts_at) : null,
-        endsAt: payload.ends_at ? new Date(payload.ends_at) : null,
+        endsAt,
         shopifyDiscountId: payload.id ? String(payload.id) : null,
+        needsRecheck: true,
+        ...(isExpired ? { isSelectable: false } : {}),
       };
 
       let coupon = await Coupon.findOne({
-        where: { shopId: targetShop.id, code },
+        where: {
+          shopId: targetShop.id,
+          [SEQUELIZE_OP.or]: [
+            ...(code ? [{ code }] : []),
+            ...(payload?.id ? [{ shopifyDiscountId: String(payload.id) }] : []),
+          ],
+        },
       });
 
       if (coupon) {
@@ -142,7 +153,7 @@ exports.handleDiscountCreateOrUpdate = async (req, res) => {
           ...couponData,
           shopId: targetShop.id,
           myshopifyDomain: targetShop.myshopifyDomain,
-          code,
+          code: code || `DISCOUNT-${payload.id}`,
           isSelectable: false,
           source: "Synced from Shopify",
         });
@@ -160,14 +171,14 @@ exports.handleDiscountDelete = async (req, res) => {
     const payload = Buffer.isBuffer(req.body)
       ? JSON.parse(req.body.toString("utf8"))
       : typeof req.body === "string"
-      ? JSON.parse(req.body)
-      : req.body;
+        ? JSON.parse(req.body)
+        : req.body;
 
     const targetShop = await findShopRecord(null, rawDomain);
 
     if (targetShop && (payload?.id || payload?.code)) {
       await Coupon.update(
-        { status: "DISABLED", isSelectable: false },
+        { status: "EXPIRED", isSelectable: false, needsRecheck: true },
         {
           where: {
             shopId: targetShop.id,

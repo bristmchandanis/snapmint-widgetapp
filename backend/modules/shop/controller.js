@@ -223,7 +223,7 @@ exports.getShopDetails = async (req, res) => {
     });
   } catch (error) {
     console.error("[ShopDetails] Error:", error.message);
-    return errorResponse(res, 401, "Invalid session token.", error);
+    return errorResponse(res, 401, error.message || "Invalid session token.", error);
   }
 };
 

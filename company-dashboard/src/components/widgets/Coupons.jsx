@@ -139,14 +139,14 @@ export default function Coupons({
             onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
             onKeyDown={(e) => e.key === 'Enter' && handleValidateAndAdd()}
             placeholder="e.g. FEST200"
-            className="w-full sm:w-72 h-10 px-3.5 border border-gray-200 text-gray-900 placeholder:text-gray-400 placeholder:font-sans focus:outline-none focus:border-gray-900 bg-white rounded-lg text-xs sm:text-sm font-mono font-semibold uppercase transition-colors shadow-2xs"
+            className="w-full sm:w-72 h-9 px-3.5 border border-gray-200 text-gray-900 placeholder:text-gray-400 placeholder:font-sans focus:outline-none focus:border-gray-900 bg-white rounded-lg text-xs sm:text-sm font-mono font-semibold uppercase transition-colors shadow-2xs"
           />
 
           <button
             type="button"
             disabled={isValidating || !couponInput.trim()}
             onClick={handleValidateAndAdd}
-            className="h-10 px-5 bg-[#111827] hover:bg-[#000000] disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs sm:text-sm font-bold rounded-lg shadow-2xs transition-all flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap"
+            className="h-9 px-4.5 bg-[#111827] hover:bg-[#000000] disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs sm:text-sm font-semibold rounded-lg shadow-2xs transition-all flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap"
           >
             {isValidating ? (
               <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -222,7 +222,7 @@ export default function Coupons({
           {loading ? (
             <div className="py-14 text-center text-xs text-gray-400 flex items-center justify-center gap-2">
               <span className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
-              <span>Loading coupons...</span>
+              <span>Loading coupons</span>
             </div>
           ) : filteredCoupons.length === 0 ? (
             <div className="py-14 text-center text-xs text-gray-400">

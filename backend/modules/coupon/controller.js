@@ -1,4 +1,5 @@
 const Coupon = require('./model');
+const { Op } = require('sequelize');
 const { findShopRecord } = require('../../utils/shopHelper');
 const { getGraphQLClient } = require('../../utils/common');
 const { successResponse, errorResponse } = require('../../utils/helper');
@@ -7,9 +8,23 @@ const { getShopifyDiscountByCode } = require('./graphql');
 exports.getCoupons = async (req, res) => {
   try {
     const targetShop = await findShopRecord(req.query.shopId, req.query.shopDomain);
-    if (!targetShop) {
-      return successResponse(res, 200, 'No store found', { coupons: [] });
-    }
+    if (!targetShop) return successResponse(res, 200, 'No store found', { coupons: [] });
+
+    const now = new Date();
+    await Coupon.update(
+      { status: 'EXPIRED', isSelectable: false, needsRecheck: true },
+      {
+        where: {
+          shopId: targetShop.id,
+          endsAt: { [Op.ne]: null, [Op.lte]: now },
+          [Op.or]: [
+            { status: { [Op.ne]: 'EXPIRED' } },
+            { isSelectable: true },
+            { needsRecheck: false },
+          ],
+        },
+      }
+    ).catch(() => {});
 
     const coupons = await Coupon.findAll({
       where: { shopId: targetShop.id },
@@ -18,56 +33,53 @@ exports.getCoupons = async (req, res) => {
 
     return successResponse(res, 200, 'Coupons fetched successfully', { coupons });
   } catch (error) {
-    console.error('Error fetching coupons:', error);
     return errorResponse(res, 500, 'Failed to fetch coupons', error);
   }
 };
 
 exports.validateAndAddCoupon = async (req, res) => {
   try {
-    const { shopId, shopDomain, code } = req.body;
-    const cleanCode = code?.trim()?.toUpperCase();
+    const cleanCode = req.body.code?.trim()?.toUpperCase();
+    if (!cleanCode) return errorResponse(res, 400, 'Coupon code is required.');
 
-    if (!cleanCode) {
-      return errorResponse(res, 400, 'Coupon code is required.');
-    }
-
-    const targetShop = await findShopRecord(shopId, shopDomain);
-    if (!targetShop || !targetShop.token) {
-      return errorResponse(res, 400, 'Store record not found or Shopify is not connected.');
-    }
+    const targetShop = await findShopRecord(req.body.shopId, req.body.shopDomain);
+    if (!targetShop?.token) return errorResponse(res, 400, 'Store not connected to Shopify.');
 
     const { graphqlClient } = await getGraphQLClient({
       shopDomain: targetShop.myshopifyDomain,
       accessToken: targetShop.token,
     });
 
-    const discountData = await getShopifyDiscountByCode(graphqlClient, cleanCode);
-    if (!discountData) {
-      return errorResponse(res, 400, `Coupon "${cleanCode}" is not found or inactive in Shopify.`);
+    const discount = await getShopifyDiscountByCode(graphqlClient, cleanCode);
+    if (!discount) {
+      return errorResponse(res, 400, `Coupon "${cleanCode}" does not exist in Shopify.`);
     }
 
-    // Save or update coupon in DB and turn it ON
-    let coupon = await Coupon.findOne({
-      where: { shopId: targetShop.id, code: cleanCode },
+    const isExpired = discount.status === 'EXPIRED' || (discount.endsAt && new Date(discount.endsAt) <= new Date());
+    if (isExpired) {
+      await Coupon.update(
+        { ...discount, status: 'EXPIRED', isSelectable: false, needsRecheck: true },
+        { where: { shopId: targetShop.id, code: cleanCode } }
+      );
+      return errorResponse(res, 400, `Coupon "${cleanCode}" has expired in Shopify.`);
+    }
+
+    if (discount.status !== 'ACTIVE') {
+      return errorResponse(res, 400, `Coupon "${cleanCode}" is inactive in Shopify.`);
+    }
+
+    const [coupon] = await Coupon.upsert({
+      ...discount,
+      shopId: targetShop.id,
+      myshopifyDomain: targetShop.myshopifyDomain,
+      code: cleanCode,
+      isSelectable: true,
+      needsRecheck: false,
+      source: 'Added by code',
     });
-
-    if (coupon) {
-      await coupon.update({ ...discountData, isSelectable: true });
-    } else {
-      coupon = await Coupon.create({
-        ...discountData,
-        shopId: targetShop.id,
-        myshopifyDomain: targetShop.myshopifyDomain,
-        code: cleanCode,
-        isSelectable: true,
-        source: 'Added by code',
-      });
-    }
 
     return successResponse(res, 200, `Coupon "${cleanCode}" validated and turned on!`, { coupon });
   } catch (error) {
-    console.error('Error validating coupon:', error);
     return errorResponse(res, 500, 'Failed to validate coupon code.', error);
   }
 };
@@ -75,14 +87,11 @@ exports.validateAndAddCoupon = async (req, res) => {
 exports.toggleCouponSelectable = async (req, res) => {
   try {
     const coupon = await Coupon.findByPk(req.params.id);
-    if (!coupon) {
-      return errorResponse(res, 404, 'Coupon not found.');
-    }
+    if (!coupon) return errorResponse(res, 404, 'Coupon not found.');
 
     await coupon.update({ isSelectable: Boolean(req.body.isSelectable) });
     return successResponse(res, 200, `Coupon "${coupon.code}" updated successfully`, { coupon });
   } catch (error) {
-    console.error('Error toggling coupon status:', error);
     return errorResponse(res, 500, 'Failed to update coupon status.', error);
   }
 };

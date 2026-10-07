@@ -77,7 +77,7 @@ export default function BoxPopup({
       {/* Inner Gray Container with Single Centered Box */}
       <div className="snp-inner-box" data-snp-el="inner-box">
         <div className="snp-cards-grid" style={{ justifyContent: 'center' }}>
-          <div className="snp-card snp-card-single snp-card-active" data-snp-el="card-active" style={{ maxWidth: '150px' }}>
+          <div className="snp-card snp-card-single" data-snp-el="card-active" style={{ maxWidth: '150px' }}>
             <button type="button" className="snp-card-badge-top" data-snp-el="pay-now-badge">0% EMI</button>
             <div className="snp-card-price" data-snp-el="card-price-1">{formatRupee(perEmi)}</div>
             <div className="snp-card-divider"></div>

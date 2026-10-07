@@ -12,6 +12,7 @@ const CashbackColorField = memo(function CashbackColorField({ fieldKey, label, v
     <div className="flex items-center justify-between text-xs">
       <span className="text-gray-700 font-medium">{label}</span>
       <ColorInput
+        className="space-y-0"
         value={value}
         onChange={(val) => onChange(fieldKey, val?.toUpperCase())}
       />
@@ -55,7 +56,7 @@ const CashbackSection = memo(function CashbackSection({
       </div>
 
       {isOpen && isEnabled && (
-        <div className="space-y-3 mt-3">
+        <div className="space-y-1.5 mt-3">
           {CASHBACK_FIELDS.map(({ key, label, defaultVal }) => (
             <CashbackColorField
               key={key}

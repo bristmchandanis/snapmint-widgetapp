@@ -774,59 +774,8 @@
     font-family: var(--snp-font-family);
 }
 
-/* ==========================================================================
-   Terms & Conditions Screen
-   ========================================================================== */
-
-/* Top Bar : Back + Logo + Close */
-
 .snp-tnc-back-icon,
 
-/* Brand Logo */
-
-/* Heading Section */
-
-/* Terms List */
-
-/* ==========================================================================
-   Product Details Screen
-   ========================================================================== */
-
-/* Header : Title + Close */
-
-/* Product List */
-
-/* Product Thumbnail */
-
-/* Product Info */
-
-/* Price Summary */
-
-/* Coupon Applied Row */
-
-/* Total Order Value */
-
-/* ==========================================================================
-   coupons css
-   ========================================================================== */
-
-/* Top Bar : Back + Title + Close */
-
-/* Price Summary */
-
-/* Applied Coupon Summary Row */
-
-/* Total Order Value Row */
-
-/* Coupon Code Entry */
-
-/* Coupon List */
-
-/* Single Coupon Card */
-
-/* ==========================================================================
-   Multi-Plan Specific Styles
-   ========================================================================== */
 .snp-rest-subtitle {
     font-size: var(--snp-font-size-lg);
     font-weight: 500;
@@ -902,15 +851,14 @@
     line-height: 16px;
 }
 
-.snp-card-single {
+.snp-card-single,
+.snp-card.snp-card-single {
     max-width: 160px;
     width: 100%;
     margin: 0 auto;
+    background-color: var(--snp-color-card-bg, #ffffff);
 }
 
-/* ==========================================================================
-   Responsive Styles for Screens <= 575px (Mobile Viewports)
-   ========================================================================== */
 @media screen and (max-width: 575px) {
     .snp-modal {
         max-width: 100%;

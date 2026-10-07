@@ -42,11 +42,12 @@ export const COLOR_FIELDS = {
 
 function ColorFieldList({ fields, colors, onApplyColor }) {
   return (
-    <div className="space-y-2.5">
+    <div className="space-y-1.5">
       {fields.map(({ key, label }) => (
         <div key={key} className="flex items-center justify-between text-xs">
           <span className="text-gray-700 font-medium">{label}</span>
           <ColorInput
+            className="space-y-0"
             value={colors[key]}
             onChange={(val) => onApplyColor(key, val)}
           />
